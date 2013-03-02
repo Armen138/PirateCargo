@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Pirate Cargo</title>
+		<link rel="stylesheet" href="fonts/rapscallion.css" type="text/css"></link>
+		<style type="text/css">
+			canvas {
+				width: 800px;
+				height: 600px;
+				position: relative;
+				margin-left: auto;
+				margin-right: auto;
+				transform: translateZ(0);
+			}
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				height: 100%;
+			}
+			.container {
+				width: 800px;
+				height: 600px;
+				position: relative;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: 50px;
+				box-shadow: 0 0 16px black;
+			}
+			.credits {
+				display: none;
+				position: absolute;
+				width: 800px;
+				height: 600px;
+				top: 0px;
+				background-color: white;
+				left: 0px;
+				padding: 50px;
+				font-size: 40px;
+				font-family: RapscallionRegular;
+				text-align: center;
+				text-shadow: 0 2px 2px black;
+			}
+			.credits a {
+				text-decoration: none;
+				color: red;
+				font-family: Arial, sans-serif;
+				font-size: 30px;
+			}
+			.credits a:hover {
+				color: #007c9b;
+			}
+			#loading {
+				left: 0px;
+				top: 0px;
+				width: 800px;				
+				position: absolute;
+				z-index: 2;
+				color: black;
+				text-shadow: 0 0 29px black;
+				font-size: 44px;
+				font-family: Arial, sans-serif;
+				text-align: center;
+			}			
+		</style>
+		<!-- script type="text/javascript">
+			var Clay = Clay || {};
+			Clay.gameKey = "spacedefender";
+			Clay.readyFunctions = [];
+			Clay.ready = function( fn ) {
+			    Clay.readyFunctions.push( fn );
+			};
+			Clay.ready(function() {
+				var main = document.createElement("script");
+				main.setAttribute("data-main", "js/main");
+				main.setAttribute("src", "js/require.js");
+				document.head.appendChild(main);
+			});
+		</script>
+		<script src="http://clay.io/api/api.js"></script -->
+		<script data-main="js/main" src="js/require.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<canvas>One does not simply play games without a canvas-capable browser</canvas>
+			<div class="credits" id="credits">
+				Programming: <br/>
+					<a href="http://armen138.com">Armen138</a><br/>
+				Particle System: <br/>
+					<a href="https://github.com/Raveler/particlus">Karel Crombecq</a><br/>
+				Space Ships: <br/>
+					<a href="http://opengameart.org/users/skorpio">Skorpio</a><br/>
+					<a href="http://opengameart.org/users/wuhu">Wuhu</a><br/>
+					<a href="http://opengameart.org/users/ghosa">Ghosa</a><br/>
+				Icons:<br/>
+					<a href="http://game-icons.net">Game-Icons.net</a><br/>
+				Music: <br/>
+					<a href="https://soundcloud.com/toastmedia/verystrangespace">ToastMedia</a>
+					<hr>
+				<a href="#" onclick="document.getElementById('credits').style.display = 'none';">back</a>
+			</div>
+			<div id="loading">
+				<img src="images/loading.png"/>
+			</div>
+		</div>
+	</body>
+</html>
