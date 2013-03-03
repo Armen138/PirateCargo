@@ -6,14 +6,14 @@ define("play", [
         "ship",
         "bullet",
         "world"
-    ],function(Canvas, 
-            Resources, 
+    ],function(Canvas,
+            Resources,
             TopBar,
             keys,
-            Ship, 
+            Ship,
             Bullet,
             World) {
-    "strict mode";
+    "use strict";
     Resources.load({
         "ships": "images/spaceships_1.png",
         "map": "maps/test1.png"
@@ -36,7 +36,6 @@ define("play", [
             ship.ammo = 12;
         },
         init: function() {
-            console.log("play time");
             topBar = TopBar([
                 {
                     obj: ship,
@@ -63,7 +62,7 @@ define("play", [
                     if(world.offset.X < 0) world.offset.X = 0;
                 }
                 if(ship.position.X - world.offset.X > 600) {
-                    world.offset.X += ship.position.X - world.offset.X - 600;                    
+                    world.offset.X += ship.position.X - world.offset.X - 600;
                     if(world.offset.X > world.width - 800) {
                         world.offset.X = world.width - 800;
                     }
@@ -77,8 +76,8 @@ define("play", [
                     if(world.offset.Y > world.height - 600) {
                         world.offset.Y = world.height - 600;
                     }
-                }   
-                ship.dirty = true;             
+                }
+                ship.dirty = true;
             }
             for(var i = 0; i < bullets.length; i++) {
                 bullets[i].draw();
@@ -96,9 +95,8 @@ define("play", [
             //shoot something
             if(ship.ammo > 0) {
                 world.add(Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle}));
-                //bullets.push(Bullet({X: ship.position.X - world.offset.X, Y: ship.position.Y - world.offset.Y }, [], {angle: ship.angle}));                
                 ship.ammo--;
-            }            
+            }
         },
         clear: function(cb) { cb(); }
     };
@@ -322,6 +320,6 @@ define("play", [
     //         right: keys.RIGHT,
     //         fire: keys.SPACE
     //     }
-    // };   
+    // };
     return play;
 });

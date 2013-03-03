@@ -5,15 +5,14 @@ define("world", ["canvas", "events"], function(Canvas, Events) {
 		var collides = function(entity) {
 			for(var i = 0; i < entities.length; i++) {
 				if(entities[i] !== entity) {
-					console.log(Math.abs(entities[i].position.X - entity.position.X));
 					if (Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2 &&
 						Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2) {
 						return entities[i];
-					}					
+					}
 				}
 			}
 			return null;
-		}
+		};
 		var collision = function() {
 			for(var i = 0; i < entities.length; i++) {
 				if(entities[i].dirty) {
@@ -27,7 +26,7 @@ define("world", ["canvas", "events"], function(Canvas, Events) {
 					entities[i].dirty = false;
 				}
 			}
-		}
+		};
 		var world = {
 			width: 64*30,
 			height: 64*30,

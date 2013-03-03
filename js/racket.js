@@ -1,4 +1,5 @@
 (function() {
+	"use strict";
 	function audio(files, callback) {
 		var file = new Audio(),
 			maxChannels = 8,

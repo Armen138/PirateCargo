@@ -1,5 +1,5 @@
 define("ship", ["canvas"], function(Canvas) {
-    "strict mode";
+    "use strict";
     var Ship = function(image) {
         var ship = {
             boundingbox: [-16, -16, 32, 32],
@@ -26,7 +26,7 @@ define("ship", ["canvas"], function(Canvas) {
             Canvas.context.strokeStyle = "red";
             Canvas.context.strokeRect.apply(Canvas.context, ship.boundingbox);
             Canvas.context.restore();
-        }        
+        };
         return ship;
     };
     // var bullets = [];

@@ -24,6 +24,7 @@ define("bullet", ["ParticleSystem", "canvas", "effects"], function(PS, Canvas, e
         var trail = new PS.ParticleSystem(effects("bullet"));
         var lastDraw = Date.now();
         var b = {
+            position: position,
             dirty: true,
             boundingbox: [-8, -8, 16, 16],
             draw: function(bb) {

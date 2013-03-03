@@ -1,3 +1,5 @@
+/*jshint newcap:false, nonew:true */
+/*global console */
 require(["game",
         "canvas",
         "play",
@@ -38,7 +40,7 @@ require(["game",
             //raf
             //PS
             ) {
-
+    "use strict";
     Canvas.size(800, 600);
 
     Resources.on("load", function() {
@@ -59,7 +61,7 @@ require(["game",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/test1.png",
+        "map": "maps/test1.png"
     });
 
     Resources.audio = {
@@ -180,48 +182,48 @@ require(["game",
 
 
 
-    gamePad.on("axis", function(e) {
-        if(e.which === 1) {
-            if(e.action === "engage") {
-                if(e.value < 0) {
-                    down[keys.DOWN] = false;
-                    down[keys.UP] = true;
-                } else {
-                    down[keys.UP] = false;
-                    down[keys.DOWN] = true;
-                }
-            } else {
-                down[keys.UP] = false;
-                down[keys.DOWN] = false;
-            }
-        }
-        if(e.which === 0) {
-            if(e.action === "engage") {
-                if(e.value < 0) {
-                    down[keys.RIGHT] = false;
-                    down[keys.LEFT] = true;
-                } else {
-                    down[keys.LEFT] = false;
-                    down[keys.RIGHT] = true;
-                }
-            } else {
-                down[keys.LEFT] = false;
-                down[keys.RIGHT] = false;
-            }
-        }
-    });
-    gamePad.on("button", function(e) {
-        if(e.action === "down") {
-            if(e.which === 0) {
-                down[keys.SPACE] = true;
-            }
-        }
-        if(e.action === "up") {
-            if(e.which === 0) {
-                down[keys.SPACE] = false;
-            }
-        }
-    });
+    // gamePad.on("axis", function(e) {
+    //     if(e.which === 1) {
+    //         if(e.action === "engage") {
+    //             if(e.value < 0) {
+    //                 down[keys.DOWN] = false;
+    //                 down[keys.UP] = true;
+    //             } else {
+    //                 down[keys.UP] = false;
+    //                 down[keys.DOWN] = true;
+    //             }
+    //         } else {
+    //             down[keys.UP] = false;
+    //             down[keys.DOWN] = false;
+    //         }
+    //     }
+    //     if(e.which === 0) {
+    //         if(e.action === "engage") {
+    //             if(e.value < 0) {
+    //                 down[keys.RIGHT] = false;
+    //                 down[keys.LEFT] = true;
+    //             } else {
+    //                 down[keys.LEFT] = false;
+    //                 down[keys.RIGHT] = true;
+    //             }
+    //         } else {
+    //             down[keys.LEFT] = false;
+    //             down[keys.RIGHT] = false;
+    //         }
+    //     }
+    // });
+    // gamePad.on("button", function(e) {
+    //     if(e.action === "down") {
+    //         if(e.which === 0) {
+    //             down[keys.SPACE] = true;
+    //         }
+    //     }
+    //     if(e.action === "up") {
+    //         if(e.which === 0) {
+    //             down[keys.SPACE] = false;
+    //         }
+    //     }
+    // });
     Canvas.clear("white");
     game.state = home;
 });
