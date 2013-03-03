@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="floor" tilewidth="64" tileheight="64">
+  <image source="../../../Downloads/space-blks-1.034.png" width="1024" height="768"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzllclOwzAQhi0WAccUEFxZxD1UfQCWA1coQsCN5QUCvECBA9cQXoDlQfkjjcXPdOK24ISiHj4lsS1/nhnbSZxzyT8jHYM1DOIVvI3BOiaZLTCr2tIGvEtg+Q/inVTvHtinWl+BS+K6Jm8XHFPsF2qc/o7l3QZt0GnIuw6mhRnKs/dkNXl9nG33fY/dSl1v5HkX2WvlnNuyGn0hbxNo7xw4UMy7/ns1tvcMLBBP4HxATu5BbwgX/5st74tyh7ylswD5kO6qeFfAqWI14H0U5zN4MPo3KthUc/IZYzoVXu+2nEnFXDxnNkKOfoLeA6nqn3JfdxnD99oo9MSZB3JS0gKLRk5OAjUOUfoKw6njb8n8O9S2K3UP1Tjk9c538CFOvQ+9t3xfE35TVyvO3PWfu9hey1kYbu89pPFHEZ0M55rjjcEnOs1lqg==
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="30" height="30">
+  <object gid="152" x="768" y="320"/>
+  <object gid="152" x="576" y="320"/>
+  <object x="192" y="384" width="64" height="512"/>
+  <object x="256" y="832" width="192" height="64"/>
+  <object x="384" y="896" width="64" height="512"/>
+  <object x="384" y="1344" height="64"/>
+  <object x="0" y="1344" width="384" height="64"/>
+  <object x="320" y="640" width="128" height="128"/>
+  <object x="640" y="1088" width="384" height="256"/>
+  <object x="640" y="1472" width="64" height="448"/>
+  <object x="704" y="1472" width="384" height="64"/>
+  <object x="1024" y="1536" width="64" height="64"/>
+ </objectgroup>
+</map>

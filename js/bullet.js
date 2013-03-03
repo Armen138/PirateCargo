@@ -24,7 +24,9 @@ define("bullet", ["ParticleSystem", "canvas", "effects"], function(PS, Canvas, e
         var trail = new PS.ParticleSystem(effects("bullet"));
         var lastDraw = Date.now();
         var b = {
-            draw: function() {
+            dirty: true,
+            boundingbox: [-8, -8, 16, 16],
+            draw: function(bb) {
                 var now = Date.now();
                 if(!double) {
                     trail.draw(Canvas.element, position.X, position.Y, 17);
@@ -82,6 +84,15 @@ define("bullet", ["ParticleSystem", "canvas", "effects"], function(PS, Canvas, e
                     rocketTrail.kill();
                     dead = true;
                 }
+
+                if(bb) {
+                    Canvas.context.strokeStyle = "red";
+                    Canvas.context.save();
+                    Canvas.context.translate(position.X, position.Y);
+                    Canvas.context.strokeRect.apply(Canvas.context, b.boundingbox);
+                    Canvas.context.restore();
+                }
+
                 if(!dead) {
                     for(var i = 0; i < enemies.length; i++) {
                         if((Math.abs(enemies[i].position.X - position.X) < enemies[i].width / 2) &&
@@ -92,6 +103,7 @@ define("bullet", ["ParticleSystem", "canvas", "effects"], function(PS, Canvas, e
                            }
                     }
                 }
+                b.dirty = true;
                 lastDraw = now;
                 if(trail.isDone()) {
                     return true;

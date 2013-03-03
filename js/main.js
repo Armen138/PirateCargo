@@ -58,7 +58,8 @@ require(["game",
         "homing": "images/on-target.png",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
-        "winner": "images/winner.png"
+        "winner": "images/winner.png",
+        "map": "maps/test1.png",
     });
 
     Resources.audio = {
