@@ -42,6 +42,7 @@ require(["game",
             ) {
     "use strict";
     Canvas.size(800, 600);
+    Canvas.clear("black");
 
     Resources.on("load", function() {
         console.log("loaded");
@@ -51,7 +52,7 @@ require(["game",
 
     Resources.load({
         "ships": "images/spaceships_1.png",
-        "logo": "images/piratecargo_inverted.png",
+        "logo": "images/piratecargo.png",
         "bomb": "images/fire-bomb.png",
         "shield": "images/edged-shield.png",
         "doubleshot": "images/double-shot.png",
@@ -224,6 +225,6 @@ require(["game",
     //         }
     //     }
     // });
-    Canvas.clear("white");
+
     game.state = home;
 });

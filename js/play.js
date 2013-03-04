@@ -30,6 +30,18 @@ define("play", [
     world.add(ship2);
     world.on("collision", function(c) {
         console.log(c);
+        if(c[0].type === "bullet" || c[1].type === "bullet") {
+            if ((c[0].owner && c[0].owner !== c[1]) ||
+                (c[1].owner && c[1].owner !== c[0])) {
+                c[0].die();
+                c[1].die();
+            }
+        } else {
+            if(c[1].type === "collisionbox" && c[0].unmove) {
+                c[0].unmove(c[2], c[3]);
+            }
+            console.log(c[0].type + " <> " + c[1].type);
+        }
     });
     var play = {
         reset: function() {
@@ -50,13 +62,7 @@ define("play", [
             var d = now - before;
             world.draw();
             if(down[keys.UP] || down[keys.W]) {
-                //move hsip forward
-                var distance = d * ship.speed;
-                var x = ship.position.X + distance * Math.cos(ship.angle);
-                var y = ship.position.Y + distance * Math.sin(ship.angle);
-                ship.position.X = x;
-                ship.position.Y = y;
-
+                ship.forward(d);
                 if(ship.position.X - world.offset.X < 200) {
                     world.offset.X -= (200 - (ship.position.X - world.offset.X));
                     if(world.offset.X < 0) world.offset.X = 0;
@@ -94,7 +100,9 @@ define("play", [
         click: function(mouse) {
             //shoot something
             if(ship.ammo > 0) {
-                world.add(Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle}));
+                var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
+                bullet.owner = ship;
+                world.add(bullet);
                 ship.ammo--;
             }
         },

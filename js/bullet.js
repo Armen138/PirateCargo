@@ -24,9 +24,15 @@ define("bullet", ["ParticleSystem", "canvas", "effects"], function(PS, Canvas, e
         var trail = new PS.ParticleSystem(effects("bullet"));
         var lastDraw = Date.now();
         var b = {
+            type: "bullet",
             position: position,
             dirty: true,
             boundingbox: [-8, -8, 16, 16],
+            die: function() {
+                    trail.kill();
+                    rocketTrail.kill();
+                    dead = true;
+            },
             draw: function(bb) {
                 var now = Date.now();
                 if(!double) {

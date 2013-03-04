@@ -1,13 +1,15 @@
-define("world", ["canvas", "events"], function(Canvas, Events) {
+define("world", ["canvas", "events", "mapdata", "collisionbox"], function(Canvas, Events, mapData, CollisionBox) {
 	"use strict";
 	var World = function(map) {
 		var entities = [];
 		var collides = function(entity) {
 			for(var i = 0; i < entities.length; i++) {
 				if(entities[i] !== entity) {
-					if (Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2 &&
-						Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2) {
-						return entities[i];
+					var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2; 
+					var verticalCollision = Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2;
+					if (horizontalCollision &&
+						verticalCollision) {
+						return [entities[i], horizontalCollision, verticalCollision];
 					}
 				}
 			}
@@ -16,17 +18,19 @@ define("world", ["canvas", "events"], function(Canvas, Events) {
 		var collision = function() {
 			for(var i = 0; i < entities.length; i++) {
 				if(entities[i].dirty) {
-					var collider = collides(entities[i]);
-					if(collider) {
+					var colliderData = collides(entities[i]);
+					if(colliderData) {
+						var collider = colliderData[0];
 						if(collider.dirty) {
 							collider.dirty = false;
 						}
-						world.fire("collision", [entities[i], collider]);
+						world.fire("collision", [entities[i], collider, colliderData[1], colliderData[2]]);
 					}
 					entities[i].dirty = false;
 				}
 			}
 		};
+
 		var world = {
 			width: 64*30,
 			height: 64*30,
@@ -48,6 +52,13 @@ define("world", ["canvas", "events"], function(Canvas, Events) {
 			}
 		};
 		Events.attach(world);
+
+		//add world collision objects
+		for(var i = 0; i < mapData.layers[1].objects.length; i++) {
+			//console.log(mapData.layers[1].objects[i]);
+			world.add(CollisionBox(mapData.layers[1].objects[i]));
+		}
+
 		return world;
 	};
 	return World;

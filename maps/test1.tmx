@@ -3,23 +3,42 @@
  <tileset firstgid="1" name="floor" tilewidth="64" tileheight="64">
   <image source="../../../Downloads/space-blks-1.034.png" width="1024" height="768"/>
  </tileset>
- <layer name="Tile Layer 1" width="30" height="30">
+ <layer name="environment" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzllclOwzAQhi0WAccUEFxZxD1UfQCWA1coQsCN5QUCvECBA9cQXoDlQfkjjcXPdOK24ISiHj4lsS1/nhnbSZxzyT8jHYM1DOIVvI3BOiaZLTCr2tIGvEtg+Q/inVTvHtinWl+BS+K6Jm8XHFPsF2qc/o7l3QZt0GnIuw6mhRnKs/dkNXl9nG33fY/dSl1v5HkX2WvlnNuyGn0hbxNo7xw4UMy7/ns1tvcMLBBP4HxATu5BbwgX/5st74tyh7ylswD5kO6qeFfAqWI14H0U5zN4MPo3KthUc/IZYzoVXu+2nEnFXDxnNkKOfoLeA6nqn3JfdxnD99oo9MSZB3JS0gKLRk5OAjUOUfoKw6njb8n8O9S2K3UP1Tjk9c538CFOvQ+9t3xfE35TVyvO3PWfu9hey1kYbu89pPFHEZ0M55rjjcEnOs1lqg==
+   eJzFl7lOAzEQhi1uyuVQqAmiJygNLRT0IBToAnmBkLxACFe7EKDmfk1mpLH4NYwdb3YVik+73lj+PLbHdjLnXCYswHsKKfVXiHXigujAs2g7k3p7RB+e0/K+Em8l2onVvyIeAt6y/Y/VfySG6tsmUQfmiPkpjHOD2AXWjPi3pS876nuo7OsX6avltb4VbeM/vYvEYYC9Cr3vxAd8PyWWhRvx3RJ3xFnEu08cwNzxHnMOdFy8n+jl95H4XsZ4j4hj+L2t6rULeJ+IFvGc4PVrv1nCey/eT+JL+A54OcdnBcxv7+kGvHp+axKjxYbhxRzHWHoyr5fy7Lt4vHqv0PhxtM4oq82uKk+Sv4h1RqW0WdabEq+1F1h7QNXxYm4wvF6ttYnwuThI8OPZbHlHyh3zspPPxTzRHZo7KzesnPBci5PvAfpMZuoBtlSbodxoBrzebTmzQFvYps6dqhm3Bmbc716G4L7Ga34psTwQZx4ZE4bvZ6vGmJzAfNTUnMfK7LPuYzr+0P27AXOsz5NYGeP0+7u/jw4Nb+z+XQQrztz9zbuU/xtl1pYfd+2uOl4rTg+Odcq9vwg/l8+HGg==
   </data>
  </layer>
- <objectgroup name="Object Layer 1" width="30" height="30">
-  <object gid="152" x="768" y="320"/>
-  <object gid="152" x="576" y="320"/>
-  <object x="192" y="384" width="64" height="512"/>
-  <object x="256" y="832" width="192" height="64"/>
-  <object x="384" y="896" width="64" height="512"/>
-  <object x="384" y="1344" height="64"/>
-  <object x="0" y="1344" width="384" height="64"/>
-  <object x="320" y="640" width="128" height="128"/>
-  <object x="640" y="1088" width="384" height="256"/>
-  <object x="640" y="1472" width="64" height="448"/>
-  <object x="704" y="1472" width="384" height="64"/>
+ <objectgroup name="collision" width="30" height="30">
+  <object x="1344" y="512" width="512" height="384"/>
+  <object x="1792" y="256" width="64" height="256"/>
+  <object x="1536" y="256" width="256" height="64"/>
+  <object x="1536" y="0" width="64" height="256"/>
+  <object x="960" y="384" width="64" height="960"/>
+  <object x="640" y="1088" width="320" height="256"/>
+  <object x="640" y="1472" width="448" height="64"/>
   <object x="1024" y="1536" width="64" height="64"/>
+  <object x="1216" y="1472" width="128" height="128"/>
+  <object x="1472" y="1472" width="128" height="128"/>
+  <object x="1728" y="1472" width="128" height="128"/>
+  <object x="640" y="1536" width="64" height="384"/>
+  <object x="0" y="1344" width="448" height="64"/>
+  <object x="384" y="832" width="64" height="512"/>
+  <object x="192" y="832" width="192" height="64"/>
+  <object x="192" y="384" width="64" height="448"/>
+  <object x="320" y="640" width="128" height="128"/>
+  <object x="192" y="1216" width="128" height="64"/>
+  <object x="1664" y="128" width="128" height="64"/>
+ </objectgroup>
+ <objectgroup name="cargo" width="30" height="30">
+  <object x="832" y="1664"/>
+  <object x="960" y="1664"/>
+  <object x="960" y="1792"/>
+  <object x="832" y="1792"/>
+  <object x="256" y="1024"/>
+  <object x="256" y="1152"/>
+  <object x="128" y="1152"/>
+  <object x="128" y="1024"/>
+  <object x="1728" y="64"/>
+  <object x="1856" y="64"/>
  </objectgroup>
 </map>
