@@ -5,7 +5,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox"], function(Canvas
 		var collides = function(entity) {
 			for(var i = 0; i < entities.length; i++) {
 				if(entities[i] !== entity) {
-					var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2; 
+					var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2;
 					var verticalCollision = Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2;
 					if (horizontalCollision &&
 						verticalCollision) {
