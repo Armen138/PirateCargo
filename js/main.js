@@ -6,19 +6,8 @@ require(["game",
         "resources",
         //"keys",
         "menu",
-        //"stars",
-        //"enemy",
-        //"enemyTypes",
-        //"effects",
-        //"bullet",
         //"powerup",
-        //"topbar",
-        "gamepad",
-        //"waves",
-        "racket"
-        //"raf"
-        //"ParticleSystem",
-        //"stats.min"
+        "gamepad"
         ],
     function(
             game,
@@ -27,18 +16,8 @@ require(["game",
             Resources,
             //keys,
             Menu,
-            //Stars,
-            //Enemy,
-            //EnemyTypes,
-            //effects,
-            //Bullet,
             //Powerup,
-            //TopBar,
-            gamePad,
-            //Waves,
-            racket
-            //raf
-            //PS
+            gamePad
             ) {
     "use strict";
     Canvas.size(800, 600);
@@ -62,22 +41,20 @@ require(["game",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/test1.png"
+        "map": "maps/test1.png",
+        "select": "audio/select.ogg",
+        "explosion": "audio/explosion.ogg",
+        "rapidfire": "audio/rapidfire.ogg",
+        "shoot": "audio/shoot.ogg",
+        "shoot2": "audio/shoot2.ogg",
+        "rocketsfx": "audio/rocket.ogg",
+        "rocket2": "audio/rocket2.ogg",
+        "pickup": "audio/pickup.ogg",
+        "strange": "audio/strange.ogg",
+        "enemyshoot": "audio/enemyshoot.ogg",
+        "error": "audio/error.ogg"
     });
 
-    Resources.audio = {
-        "select": racket.create("audio/select.ogg"),
-        "explosion": racket.create("audio/explosion.ogg"),
-        "rapidfire": racket.create("audio/rapidfire.ogg"),
-        "shoot": racket.create("audio/shoot.ogg"),
-        "shoot2": racket.create("audio/shoot2.ogg"),
-        "rocket": racket.create("audio/rocket.ogg"),
-        "rocket2": racket.create("audio/rocket2.ogg"),
-        "pickup": racket.create("audio/pickup.ogg"),
-        "strange": racket.create("audio/strange.ogg"),
-        "enemyshoot": racket.create("audio/enemyshoot.ogg"),
-        "error": racket.create("audio/error.ogg")
-    };
     var gameover = Menu(Canvas.element, [
             {
                 label: "Restart",
@@ -152,7 +129,6 @@ require(["game",
             {
                 label: "Play",
                 action: function() {
-                    //alert("play");
                     play.reset();
                     play.mode = "waves";
                     game.state = play;
@@ -161,7 +137,6 @@ require(["game",
             {
                 label: "Credits",
                 action: function() {
-                    //alert("credits");
                     document.getElementById("credits").style.display = "block";
                 }
             },

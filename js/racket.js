@@ -1,3 +1,5 @@
+/*jshint newcap:false, nonew:true */
+/*global console, define */
 (function() {
 	"use strict";
 	function audio(files, callback) {

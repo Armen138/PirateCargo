@@ -114,7 +114,7 @@ define("play", [
     window.addEventListener("mousemove", function(e) {
             var x = e.clientX - Canvas.position.X + world.offset.X;
             var y = e.clientY - Canvas.position.Y + world.offset.Y;
-        ship.angle = Math.atan2((ship.position.X - x), (y - ship.position.Y)) +1.5707963249999999;
+        ship.angle = Math.atan2((ship.position.X - x), (y - ship.position.Y)) + 1.5707963249999999;
     });
     return play;
 });
