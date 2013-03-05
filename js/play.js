@@ -52,6 +52,14 @@ define("play", [
             c[1].collect();
         }
     });
+    function shoot() {
+        if(ship.ammo > 0) {
+            var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
+            bullet.owner = ship;
+            world.add(bullet);
+            ship.ammo--;
+        }
+    }
     var play = {
         cargo: 6,
         reset: function() {
@@ -77,6 +85,13 @@ define("play", [
             var now = Date.now();
             var d = now - before;
             world.draw();
+            if(down[keys.LEFT] || down[keys.A]) {
+                ship.angle -= 0.1;
+            }
+            if(down[keys.RIGHT] || down[keys.D]) {
+                ship.angle += 0.1;
+            }
+
             if(down[keys.UP] || down[keys.W]) {
                 ship.forward(d);
                 if(ship.position.X - world.offset.X < 200) {
@@ -109,26 +124,25 @@ define("play", [
         },
         keydown:  function(keyCode) {
             down[keyCode] = true;
+            if(keyCode === keys.SPACE) {
+                shoot();
+            }
         },
         keyup: function(keyCode) {
             down[keyCode] = false;
         },
         click: function(mouse) {
             //shoot something
-            if(ship.ammo > 0) {
-                var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
-                bullet.owner = ship;
-                world.add(bullet);
-                ship.ammo--;
-            }
+            shoot();
         },
         clear: function(cb) { cb(); }
     };
 
+    /*
     window.addEventListener("mousemove", function(e) {
             var x = e.clientX - Canvas.position.X + world.offset.X;
             var y = e.clientY - Canvas.position.Y + world.offset.Y;
         ship.angle = Math.atan2((ship.position.X - x), (y - ship.position.Y)) + 1.5707963249999999;
-    });
+    });*/
     return play;
 });
