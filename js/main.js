@@ -33,6 +33,9 @@ require(["game",
         "ships": "images/spaceships_1.png",
         "logo": "images/piratecargo.png",
         "bomb": "images/fire-bomb.png",
+        "chest": "images/chest32.png",
+        "sign": "images/sign32.png",
+        "bigsign": "images/sign.png",
         "shield": "images/edged-shield.png",
         "doubleshot": "images/double-shot.png",
         "heal": "images/heal.png",
@@ -77,7 +80,7 @@ require(["game",
                     }
                 }
             }
-        ], Resources.images.gameover);
+        ], Resources.gameover);
 
     var winner = Menu(Canvas.element, [
             {
@@ -101,7 +104,7 @@ require(["game",
                     }
                 }
             }
-        ], Resources.images.winner);
+        ], Resources.winner);
 
     var paused = Menu(Canvas.element, [
             {
@@ -148,7 +151,7 @@ require(["game",
                     }
                 }
             }
-        ], Resources.images.logo);
+        ], Resources.logo);
 
     window.addEventListener("blur", function() {
         if(game.state == play) {

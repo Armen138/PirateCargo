@@ -13,6 +13,9 @@ define("powerup", ["canvas"], function(Canvas) {
 				);
 		}
 		return {
+			position: position,
+			boundingbox: [-16, -16, 32, 32],
+			type: "powerup",
 			draw: function() {
 				//scale = 0.5 + ((Date.now() - start) % 50 / 50);
 				if(Date.now() - lastScale > scaleTime) {
@@ -30,12 +33,10 @@ define("powerup", ["canvas"], function(Canvas) {
 				return dead;
 			},
 			collect: function(target) {
-				if(distance(position, target) < 32) {
-					dead = true;
-					action.call(this);
-				}
+				dead = true;
+				action.call(this);
 			}
 		};
 	};
 	return powerup;
-})
+});

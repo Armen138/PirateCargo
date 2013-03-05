@@ -409,6 +409,30 @@
          "width":30,
          "x":0,
          "y":0
+        }, 
+        {
+         "height":30,
+         "name":"signs",
+         "objects":[
+                {
+                 "height":0,
+                 "name":"Warning",
+                 "properties":
+                    {
+                     "message":"Things can get dangerous around here..."
+                    },
+                 "type":"sign",
+                 "visible":true,
+                 "width":0,
+                 "x":673,
+                 "y":609
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":30,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":

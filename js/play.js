@@ -18,16 +18,19 @@ define("play", [
     "use strict";
     Resources.load({
         "ships": "images/spaceships_1.png",
+        "chest": "images/chest32.png",
+        "sign": "images/sign32.png",
+        "bigsign": "images/sign.png",
         "map": "maps/test1.png"
     });
     var down = {};
     var topBar;
     var bullets = [];
     var before = Date.now();
-    var ship = Ship(Resources.images.ships);
-    var ship2 = Ship(Resources.images.ships);
+    var ship = Ship(Resources.ships);
+    var ship2 = Ship(Resources.ships);
     ship2.position.Y = 600;
-    var world = World(Resources.images.map);
+    var world = World(Resources.map, Resources);
     world.add(ship);
     world.add(ship2);
     world.on("collision", function(c) {
@@ -44,8 +47,13 @@ define("play", [
             }
             //console.log(c[0].type + " <> " + c[1].type);
         }
+        if(c[1].type === "powerup") {
+            ship.cargo++;
+            c[1].collect();
+        }
     });
     var play = {
+        cargo: 6,
         reset: function() {
             ship.ammo = 12;
         },
@@ -55,6 +63,12 @@ define("play", [
                     obj: ship,
                     prop: "ammo",
                     name: "ammo",
+                    type: "string"
+                },
+                {
+                    obj: ship,
+                    prop: "cargo",
+                    name: "cargo",
                     type: "string"
                 }
             ]);

@@ -41,4 +41,11 @@
   <object x="1728" y="64"/>
   <object x="1856" y="64"/>
  </objectgroup>
+ <objectgroup name="signs" width="30" height="30">
+  <object name="Warning" type="sign" x="673" y="609">
+   <properties>
+    <property name="message" value="Things can get dangerous around here..."/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

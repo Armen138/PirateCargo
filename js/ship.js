@@ -12,6 +12,7 @@ define("ship", ["canvas"], function(Canvas) {
             angle: 0,
             dirty: false,
             speed: 0.3, //px/ms
+            cargo: 0,
             draw: function(bb) {
                 Canvas.context.save();
                 Canvas.context.translate(ship.position.X, ship.position.Y);
