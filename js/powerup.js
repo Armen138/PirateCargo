@@ -32,6 +32,9 @@ define("powerup", ["canvas"], function(Canvas) {
 				Canvas.context.restore();
 				return dead;
 			},
+			die: function() {
+				dead = true;
+			},
 			collect: function(target) {
 				dead = true;
 				action.call(this);
