@@ -7,14 +7,16 @@ define("play", [
         "keys",
         "ship",
         "bullet",
-        "world"
+        "world",
+        "container"
     ],function(Canvas,
             Resources,
             TopBar,
             keys,
             Ship,
             Bullet,
-            World) {
+            World,
+            Container) {
     "use strict";
     Resources.load({
         "ships": "images/spaceships_1.png",
@@ -31,8 +33,10 @@ define("play", [
     var ship2 = Ship(Resources.ships);
     ship2.position.Y = 600;
     var world = World(Resources.map, Resources);
+    var enemies = Container();
+    world.add(enemies);
     world.add(ship);
-    world.add(ship2);
+    enemies.add(ship2);
     world.on("collision", function(c) {
         //console.log(c);
         if(c[0].type === "bullet" || c[1].type === "bullet") {
@@ -116,6 +120,9 @@ define("play", [
                 }
                 ship.dirty = true;
             }
+            enemies.each(function(enemy) {
+                enemy.angle = Math.atan2((enemy.position.X - ship.position.X), (ship.position.Y - enemy.position.Y)) + 1.5707963249999999;
+            });
             for(var i = 0; i < bullets.length; i++) {
                 bullets[i].draw();
             }

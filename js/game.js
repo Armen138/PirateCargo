@@ -14,7 +14,6 @@ define("game",
     var game = {
             run: function() {
                 stats.begin();
-                //Canvas.clear();
                 if(game.state) {
                     game.state.run();
                 }

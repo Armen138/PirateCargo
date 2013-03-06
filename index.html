@@ -11,7 +11,11 @@
 				position: relative;
 				margin-left: auto;
 				margin-right: auto;
+				border-radius: 20px;
 				transform: translateZ(0);
+			}
+			html {
+				height: 100%;
 			}
 			body {
 				margin: 0;
@@ -20,15 +24,22 @@
 				height: 100%;
 				background-image: url(images/weave1.png);
 			}
+			.centered {
+				width: 800px;
+				height: 100%;
+				position: relative;
+				margin-left: auto;
+				margin-right: auto;			
+			}
 			.container {
 				width: 800px;
 				height: 600px;
-				position: relative;
-				margin-left: auto;
-				margin-right: auto;
-				margin-top: 50px;
+				position: absolute;
+				top: 50%;
+				margin-top: -300px;
 				box-shadow: 0 0 32px black;
 				border: 1px solid black;
+				border-radius: 20px;
 			}
 			.credits {
 				display: none;
@@ -55,10 +66,11 @@
 			#loading {
 				left: 0px;
 				top: 0px;
-				width: 800px;				
+				width: 800px;	
+				height: 600px;			
 				position: absolute;
 				z-index: 2;
-				color: black;
+				background-color: black;
 				text-shadow: 0 0 29px black;
 				font-size: 44px;
 				font-family: Arial, sans-serif;
@@ -83,27 +95,29 @@
 		<script data-main="js/main" src="js/require.js"></script>
 	</head>
 	<body>
-		<div class="container">
-			<canvas>One does not simply play games without a canvas-capable browser</canvas>
-			<div class="credits" id="credits">
-				<br/>
-				Programming: <br/>
-					<a href="http://armen138.com">Armen138</a><br/>
-				Space Ships: <br/>
-					<a href="http://opengameart.org/users/skorpio">Skorpio</a><br/>
-					<a href="http://opengameart.org/users/wuhu">Wuhu</a><br/>
-					<a href="http://opengameart.org/users/ghosa">Ghosa</a><br/>
-				Environment: <br/>
-					<a href="http://www.spicypixel.net">Marc Russell</a><br/>
-				Icons:<br/>
-					<a href="http://game-icons.net">Game-Icons.net</a><br/>
-				Music: <br/>
-					<a href="https://soundcloud.com/toastmedia/verystrangespace">ToastMedia</a>
-					<hr>
-				<a href="#" onclick="document.getElementById('credits').style.display = 'none';">back</a>
-			</div>
-			<div id="loading">
-				<img src="images/loading.png"/>
+		<div class="centered">
+			<div class="container">
+				<canvas>One does not simply play games without a canvas-capable browser</canvas>
+				<div class="credits" id="credits">
+					<br/>
+					Programming: <br/>
+						<a href="http://armen138.com">Armen138</a><br/>
+					Space Ships: <br/>
+						<a href="http://opengameart.org/users/skorpio">Skorpio</a><br/>
+						<a href="http://opengameart.org/users/wuhu">Wuhu</a><br/>
+						<a href="http://opengameart.org/users/ghosa">Ghosa</a><br/>
+					Environment: <br/>
+						<a href="http://www.spicypixel.net">Marc Russell</a><br/>
+					Icons:<br/>
+						<a href="http://game-icons.net">Game-Icons.net</a><br/>
+					Music: <br/>
+						<a href="https://soundcloud.com/toastmedia/verystrangespace">ToastMedia</a>
+						<hr>
+					<a href="#" onclick="document.getElementById('credits').style.display = 'none';">back</a>
+				</div>
+				<div id="loading">
+					<img src="images/loading.png"/>
+				</div>
 			</div>
 		</div>
 	</body>
