@@ -20,27 +20,18 @@ define("play", [
             Container,
             QuickButtons) {
     "use strict";
-    Resources.load({
-        "ships": "images/spaceships_1.png",
-        "chest": "images/chest32.png",
-        "sign": "images/sign32.png",
-        "bigsign": "images/sign.png",
-        "map": "maps/test1.png"
-    });
+
     var down = {};
     var topBar;
     var bullets = [];
     var before = Date.now();
-    var ship = Ship(Resources.ships);
-    var ship2 = Ship(Resources.ships);
-    ship2.position.Y = 600;
-    var world = World(Resources.map, Resources);
+    var ship;
+    var ship2;
+    var world;
     var enemies = Container();
-    world.add(enemies);
-    world.add(ship);
-    enemies.add(ship2);
-    world.on("collision", function(c) {
-        //console.log(c);
+
+
+    var collision = function(c) {
         if(c[0].type === "bullet" || c[1].type === "bullet") {
             if ((c[0].owner && c[0].owner !== c[1]) ||
                 (c[1].owner && c[1].owner !== c[0])) {
@@ -71,7 +62,7 @@ define("play", [
             //QuickButtons.buttons[0].label = ship.cargo + "";
             c[1].collect();
         }
-    });
+    };
     function shoot() {
         if(ship.ammo > 0) {
             var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
@@ -84,9 +75,19 @@ define("play", [
         cargo: 6,
         mouse: {X: 0, Y: 0},
         reset: function() {
-            ship.ammo = 12;
+            /*if(ship) {
+                ship.ammo = 12;
+            }*/
         },
         init: function() {
+            ship = Ship(Resources.ships);
+            ship2 = Ship(Resources.ships);
+            ship2.position.Y = 600;
+            world = World(Resources.map, Resources);
+            world.add(enemies);
+            world.add(ship);
+            enemies.add(ship2);
+            world.on("collision", collision);
             topBar = TopBar([
                 {
                     obj: ship,
