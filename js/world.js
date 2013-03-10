@@ -59,7 +59,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
                 for(var i = entities.length - 1; i >= 0; --i) {
-                    if(entities[i].draw(true)) {
+                    if(entities[i].draw()) {
                         entities.splice(i, 1);
                     }
                 }
@@ -121,11 +121,11 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
         }
 
         for(i = 0; i < mapData.layers[2].objects.length; i++) {
-            world.add(PowerUp(Resources.chest, function() {}, {X: mapData.layers[2].objects[i].x, Y: mapData.layers[2].objects[i].y }));
+            world.add(PowerUp(Resources.chest, function() {}, {X: mapData.layers[2].objects[i].x, Y: mapData.layers[2].objects[i].y }, "cargo"));
         }
         for(i = 0; i < mapData.layers[3].objects.length; i++) {
             (function(sign) {
-                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }));
+                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
             }(mapData.layers[3].objects[i]));
             
         }

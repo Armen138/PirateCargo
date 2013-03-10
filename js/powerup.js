@@ -1,5 +1,5 @@
 define("powerup", ["canvas"], function(Canvas) {
-	var powerup = function(image, action, position) {
+	var powerup = function(image, action, position, name) {
 		var start = Date.now();
 		var lastScale = 0;
 		var scaleTime = 50;
@@ -16,6 +16,8 @@ define("powerup", ["canvas"], function(Canvas) {
 			position: position,
 			boundingbox: [-16, -16, 32, 32],
 			type: "powerup",
+			image: image,
+			name: name,
 			draw: function() {
 				//scale = 0.5 + ((Date.now() - start) % 50 / 50);
 				if(Date.now() - lastScale > scaleTime) {

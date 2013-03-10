@@ -51,6 +51,14 @@ define("game",
         }
     });
 
+    window.addEventListener("mousemove", function(e) {
+        if(game.state && game.state.mousemove) {
+            var x = e.clientX - Canvas.position.X;
+            var y = e.clientY - Canvas.position.Y;
+            game.state.mousemove({X: x, Y: y});
+        }
+    });
+
     window.addEventListener("click", function(e) {
         if(game.state && game.state.click) {
             var x = e.clientX - Canvas.position.X;

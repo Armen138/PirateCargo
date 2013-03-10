@@ -1,5 +1,5 @@
 /*jshint newcap:false, nonew:true */
-/*global console */
+/*global console, alert */
 define("play", [
         "canvas",
         "resources",
@@ -8,7 +8,8 @@ define("play", [
         "ship",
         "bullet",
         "world",
-        "container"
+        "container",
+        "quickbuttons"
     ],function(Canvas,
             Resources,
             TopBar,
@@ -16,7 +17,8 @@ define("play", [
             Ship,
             Bullet,
             World,
-            Container) {
+            Container,
+            QuickButtons) {
     "use strict";
     Resources.load({
         "ships": "images/spaceships_1.png",
@@ -52,7 +54,21 @@ define("play", [
             //console.log(c[0].type + " <> " + c[1].type);
         }
         if(c[1].type === "powerup") {
+            if(!ship.inventory[c[1].name]) {
+                ship.inventory[c[1].name] = {};
+                ship.inventory[c[1].name].count = 0;
+                ship.inventory[c[1].name].button = {
+                    label: 0,
+                    icon: c[1].image,
+                    action: c[1].collect
+                };
+                QuickButtons.buttons.push(ship.inventory[c[1].name].button);
+
+            }
+            ship.inventory[c[1].name].count += 1;
             ship.cargo++;
+            ship.inventory[c[1].name].button.label = ship.inventory[c[1].name].count + "";
+            //QuickButtons.buttons[0].label = ship.cargo + "";
             c[1].collect();
         }
     });
@@ -66,6 +82,7 @@ define("play", [
     }
     var play = {
         cargo: 6,
+        mouse: {X: 0, Y: 0},
         reset: function() {
             ship.ammo = 12;
         },
@@ -84,6 +101,7 @@ define("play", [
                     type: "string"
                 }
             ]);
+            QuickButtons.buttons = [];
         },
         run: function() {
             var now = Date.now();
@@ -127,6 +145,8 @@ define("play", [
                 bullets[i].draw();
             }
             topBar.draw();
+            QuickButtons.draw();
+            Canvas.context.fillRect(play.mouse.X, play.mouse.Y, 10, 10);
             before = now;
         },
         keydown:  function(keyCode) {
@@ -141,6 +161,10 @@ define("play", [
         click: function(mouse) {
             //shoot something
             shoot();
+            QuickButtons.click(mouse);
+        },
+        mousemove: function(mouse) {
+            play.mouse = mouse;
         },
         clear: function(cb) { cb(); }
     };
