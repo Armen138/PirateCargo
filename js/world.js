@@ -113,22 +113,69 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
         };
         Events.attach(world);
 
-        //add world collision objects
-        var i = 0;
-        for(i = 0; i < mapData.layers[1].objects.length; i++) {
-            //console.log(mapData.layers[1].objects[i]);
-            world.add(CollisionBox(mapData.layers[1].objects[i]));
+        var layerHandlers = {
+        	collision: function(layer) {
+		        for(i = 0; i < layer.objects.length; i++) {	            
+		            world.add(CollisionBox(layer.objects[i]));
+		        }        	
+        	},
+        	cargo: function(layer) {
+		        for(i = 0; i < layer.objects.length; i++) {
+		            world.add(PowerUp(Resources.chest, function() {}, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
+		        }         		
+        	},
+        	signs: function(layer) {
+		        for(i = 0; i < layer.objects.length; i++) {
+		            (function(sign) {
+		                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
+		            }(layer.objects[i]));
+		        }        		
+        	}
+        }
+        function collisionLayer(layer) {
+	        for(i = 0; i < layer.objects.length; i++) {	            
+	            world.add(CollisionBox(layer.objects[i]));
+	        }        	
         }
 
-        for(i = 0; i < mapData.layers[2].objects.length; i++) {
-            world.add(PowerUp(Resources.chest, function() {}, {X: mapData.layers[2].objects[i].x, Y: mapData.layers[2].objects[i].y }, "cargo"));
+        function cargoLayer(layer) {
+	        for(i = 0; i < layer.objects.length; i++) {
+	            world.add(PowerUp(Resources.chest, function() {}, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
+	        }        	
         }
-        for(i = 0; i < mapData.layers[3].objects.length; i++) {
-            (function(sign) {
-                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
-            }(mapData.layers[3].objects[i]));
-            
+
+        function signLayer(layer) {
+        	console.log("planting signs");
+	        for(i = 0; i < layer.objects.length; i++) {
+	            (function(sign) {
+	                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
+	            }(layer.objects[i]));
+	        }        	
         }
+        //add world collision objects
+        var i = 0;
+        console.log(mapData.layers.length);
+        for(i = 0; i < mapData.layers.length; i++) {
+        	console.log("layer: " + mapData.layers[i].name);
+        	if(layerHandlers.hasOwnProperty(mapData.layers[i].name)) {
+        		layerHandlers[mapData.layers[i].name](mapData.layers[i]);	
+        	}
+        	
+        	// switch(mapData.layers[i].name) {
+        	// 	case "collision": 
+        	// 		collisionLayer(mapData.layers[i]);
+        	// 	break;
+        	// 	case "enemies":
+        	// 	break;
+        	// 	case "signs":
+        	// 		signLayer(mapData.layers[i]);
+        	// 	break;
+        	// 	case "cargo":
+        	// 		cargoLayer(mapData.layers[i]);
+        	// 	break;
+        	// }
+        }
+
         return world;
     };
     return World;

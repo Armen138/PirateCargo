@@ -48,4 +48,18 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="enemies" width="30" height="30">
+  <object x="1088" y="960">
+   <polyline points="0,0 0,448 768,448 768,0 0,0"/>
+  </object>
+  <object x="320" y="64">
+   <polyline points="0,0 0,448 576,448 576,0 448,384 384,0 320,384 256,0 192,384 128,0 64,384 0,0"/>
+  </object>
+  <object x="1088" y="256">
+   <polyline points="0,0 192,-192 384,0 192,192 0,0"/>
+  </object>
+  <object x="128" y="1856">
+   <polyline points="0,0 384,-192 448,-448 1024,-448 1024,-192 1536,-192 1536,-512 1024,-512 1664,-832 1024,-832 1024,-1600 704,-1600 704,-1152 384,-1152 704,-1024 384,-896 704,-896 384,-768 384,0 0,0"/>
+  </object>
+ </objectgroup>
 </map>

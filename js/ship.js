@@ -11,7 +11,7 @@ define("ship", ["canvas"], function(Canvas) {
             hp: 10,
             angle: 0,
             dirty: false,
-            speed: 0.3, //px/ms
+            speed: 0.5, //px/ms
             cargo: 0,
             inventory: {
 
