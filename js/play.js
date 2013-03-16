@@ -40,9 +40,17 @@ define("play", [
             }
         } else {
             if(c[1].type === "collisionbox" && c[0].unmove) {
-                c[0].unmove(c[2], c[3]);
+                var collisionPosition = {X: c[0].position.X, Y: c[0].position.Y};
+                c[0].unmove(true, false);
+                if(world.touches(c[0], c[1])) {
+                    c[0].position = collisionPosition;
+                    c[0].unmove(false, true);                    
+                }
+                if(world.touches(c[0], c[1])) {
+                    c[0].unmove(true, false);
+                    console.log("corner unmove");
+                }
             }
-            //console.log(c[0].type + " <> " + c[1].type);
         }
         if(c[1].type === "powerup") {
             if(!ship.inventory[c[1].name]) {

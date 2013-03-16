@@ -4,16 +4,33 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
     "use strict";
     var World = function(map, Resources) {
         var entities = [];
+        var touches = function(ent1, ent2) {
+            if (ent1 !== ent2 &&
+                !ent1.noncollider &&
+                !ent2.noncollider) {
+                var horizontalCollision = Math.abs(ent1.position.X - ent2.position.X) < ent1.boundingbox[2] / 2 + ent2.boundingbox[2] / 2;
+                var verticalCollision = Math.abs(ent1.position.Y - ent2.position.Y) < ent1.boundingbox[3] / 2 + ent2.boundingbox[3] / 2;
+                if (horizontalCollision &&
+                    verticalCollision) {
+                    return true;
+                }
+            }
+            return false;    
+        };
+
         var collides = function(entity) {
             for(var i = 0; i < entities.length; i++) {
-                if(entities[i] !== entity && !entities[i].noncollider) {
-                    var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2;
-                    var verticalCollision = Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2;
-                    if (horizontalCollision &&
-                        verticalCollision) {
-                        return [entities[i], horizontalCollision, verticalCollision];
-                    }
+                if(touches(entities[i], entity)) {
+                    return [entities[i], true, true];
                 }
+                // if(entities[i] !== entity && !entities[i].noncollider) {
+                //     var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2;
+                //     var verticalCollision = Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2;
+                //     if (horizontalCollision &&
+                //         verticalCollision) {
+                //         return [entities[i], horizontalCollision, verticalCollision];
+                //     }
+                // }
             }
             return null;
         };
@@ -54,6 +71,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
                 entities.push(e);
             },
             offset: {X: 0, Y: 0},
+            touches: touches,
             draw: function() {
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);

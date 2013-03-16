@@ -35,6 +35,9 @@ define("ship", ["canvas"], function(Canvas) {
                 if(x) ship.position.X = back.X;
                 if(y) ship.position.Y = back.Y;
             },
+            lastPosition: function() {
+                return back;
+            },
             forward: function(d) {
                 var distance = d * ship.speed;
                 back = {X: ship.position.X, Y: ship.position.Y};

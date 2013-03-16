@@ -5,10 +5,12 @@ define("bullet", ["canvas"], function(Canvas) {
                 Math.abs(p1.Y - p2.Y)
             );
     }
+    //TODO retire enemies argument
     var bullet = function(position, enemies, options) {
         if(!options) {
             options = {};
         }
+        var lastPosition = {X: position.X, Y: position.Y};
         var start = Date.now();
         var speed = options.speed || 0.7;
         var dead = false;
@@ -32,6 +34,7 @@ define("bullet", ["canvas"], function(Canvas) {
                 position.X += distance * Math.cos(options.angle);
                 position.Y += distance * Math.sin(options.angle);
                 travelled += distance;
+                Canvas.context.fillRect(position.X, position.Y, 8, 8);
                 if(travelled > range) {
                     dead = true;
                 }
