@@ -1,6 +1,6 @@
 /*jshint newcap:false, nonew:true */
 /*global console */
-define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], function(Canvas, Events, mapData, CollisionBox, PowerUp) {
+define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship", "resources"], function(Canvas, Events, mapData, CollisionBox, PowerUp, Ship, Resources) {
     "use strict";
     var World = function(map, Resources) {
         var entities = [];
@@ -120,9 +120,9 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
                         }
                     }
                     if(sentence !== "") {
-                        Canvas.context.fillText(sentence, 400, top);    
+                        Canvas.context.fillText(sentence, 400, top);
                     }*/
-                    
+
                     //Canvas.context.fillText(sign.message, 400, 250);
                     Canvas.context.restore();
                 }
@@ -131,67 +131,55 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup"], func
         };
         Events.attach(world);
 
+        var dummy = function() {};
+
         var layerHandlers = {
-        	collision: function(layer) {
-		        for(i = 0; i < layer.objects.length; i++) {	            
-		            world.add(CollisionBox(layer.objects[i]));
-		        }        	
-        	},
-        	cargo: function(layer) {
-		        for(i = 0; i < layer.objects.length; i++) {
-		            world.add(PowerUp(Resources.chest, function() {}, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
-		        }         		
-        	},
-        	signs: function(layer) {
-		        for(i = 0; i < layer.objects.length; i++) {
-		            (function(sign) {
-		                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
-		            }(layer.objects[i]));
-		        }        		
-        	}
-        }
-        function collisionLayer(layer) {
-	        for(i = 0; i < layer.objects.length; i++) {	            
-	            world.add(CollisionBox(layer.objects[i]));
-	        }        	
-        }
+            collision: function(layer) {
+                for(var i = 0; i < layer.objects.length; i++) {
+                    world.add(CollisionBox(layer.objects[i]));
+                }
+            },
+            cargo: function(layer) {
+                for(var i = 0; i < layer.objects.length; i++) {
+                    world.add(PowerUp(Resources.chest, dummy, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
+                }
+            },
+            signs: function(layer) {
+                for(var i = 0; i < layer.objects.length; i++) {
+                    (function(sign) {
+                        world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
+                    }(layer.objects[i]));
+                }
+            },
+            enemies: function(layer) {
+                for(var i = 0; i < layer.objects.length; i++) {
+                    console.log(layer.objects[i].polyline.length);
 
-        function cargoLayer(layer) {
-	        for(i = 0; i < layer.objects.length; i++) {
-	            world.add(PowerUp(Resources.chest, function() {}, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
-	        }        	
-        }
+                    var pos = {
+                        X: layer.objects[i].x + layer.objects[i].polyline[0].x,
+                        Y: layer.objects[i].y + layer.objects[i].polyline[0].y
+                    };
+                    var ship = Ship(Resources.ships);
+                    ship.position = pos;
+                    world.add(ship);
+                    ship.waypoints = [];
+                    for(var w = 0; w < layer.objects[i].polyline.length; w++) {
+                        ship.waypoints.push({
+                            X: layer.objects[i].x + layer.objects[i].polyline[w].x,
+                            Y: layer.objects[i].y + layer.objects[i].polyline[w].y
+                        });
+                    }
+                }
+            }
+        };
 
-        function signLayer(layer) {
-        	console.log("planting signs");
-	        for(i = 0; i < layer.objects.length; i++) {
-	            (function(sign) {
-	                world.add(PowerUp(Resources.sign, function() { showSign(sign.name, sign.properties.message);}, {X: sign.x, Y: sign.y }, "sign"));
-	            }(layer.objects[i]));
-	        }        	
-        }
         //add world collision objects
-        var i = 0;
         console.log(mapData.layers.length);
-        for(i = 0; i < mapData.layers.length; i++) {
-        	console.log("layer: " + mapData.layers[i].name);
-        	if(layerHandlers.hasOwnProperty(mapData.layers[i].name)) {
-        		layerHandlers[mapData.layers[i].name](mapData.layers[i]);	
-        	}
-        	
-        	// switch(mapData.layers[i].name) {
-        	// 	case "collision": 
-        	// 		collisionLayer(mapData.layers[i]);
-        	// 	break;
-        	// 	case "enemies":
-        	// 	break;
-        	// 	case "signs":
-        	// 		signLayer(mapData.layers[i]);
-        	// 	break;
-        	// 	case "cargo":
-        	// 		cargoLayer(mapData.layers[i]);
-        	// 	break;
-        	// }
+        for(var i = 0; i < mapData.layers.length; i++) {
+            console.log("layer: " + mapData.layers[i].name);
+            if(layerHandlers.hasOwnProperty(mapData.layers[i].name)) {
+                layerHandlers[mapData.layers[i].name](mapData.layers[i]);
+            }
         }
 
         return world;
