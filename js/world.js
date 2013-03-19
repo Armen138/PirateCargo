@@ -19,31 +19,26 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
         };
 
         var collides = function(entity) {
+            var collisionObjects = [];
             for(var i = 0; i < entities.length; i++) {
                 if(touches(entities[i], entity)) {
-                    return [entities[i], true, true];
+                    collisionObjects.push(entities[i]);
                 }
-                // if(entities[i] !== entity && !entities[i].noncollider) {
-                //     var horizontalCollision = Math.abs(entities[i].position.X - entity.position.X) < entities[i].boundingbox[2] / 2 + entity.boundingbox[2] / 2;
-                //     var verticalCollision = Math.abs(entities[i].position.Y - entity.position.Y) < entities[i].boundingbox[3] / 2 + entity.boundingbox[3] / 2;
-                //     if (horizontalCollision &&
-                //         verticalCollision) {
-                //         return [entities[i], horizontalCollision, verticalCollision];
-                //     }
-                // }
             }
-            return null;
+            return collisionObjects;
         };
         var collision = function() {
             for(var i = 0; i < entities.length; i++) {
                 if(entities[i].dirty) {
                     var colliderData = collides(entities[i]);
-                    if(colliderData) {
-                        var collider = colliderData[0];
-                        if(collider.dirty) {
-                            collider.dirty = false;
+                    if(colliderData.length > 0) {
+                        for(var c = 0; c < colliderData.length; c++) {
+                            var collider = colliderData[c];
+                            if(collider.dirty) {
+                                collider.dirty = false;
+                            }
+                            world.fire("collision", [entities[i], collider]);
                         }
-                        world.fire("collision", [entities[i], collider, colliderData[1], colliderData[2]]);
                     }
                     entities[i].dirty = false;
                 }
@@ -73,6 +68,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
             offset: {X: 0, Y: 0},
             touches: touches,
             draw: function() {
+                collision();
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
@@ -125,8 +121,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
 
                     //Canvas.context.fillText(sign.message, 400, 250);
                     Canvas.context.restore();
-                }
-                collision();
+                }                
             }
         };
         Events.attach(world);
@@ -160,6 +155,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
                         Y: layer.objects[i].y + layer.objects[i].polyline[0].y
                     };
                     var ship = Ship(Resources.ships);
+                    ship.speed = 0.1;
                     ship.position = pos;
                     world.add(ship);
                     ship.waypoints = [];

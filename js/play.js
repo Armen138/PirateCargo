@@ -39,17 +39,27 @@ define("play", [
                 c[1].die();
             }
         } else {
-            if(c[1].type === "collisionbox" && c[0].unmove) {
-                var collisionPosition = {X: c[0].position.X, Y: c[0].position.Y};
-                c[0].unmove(true, false);
-                if(world.touches(c[0], c[1])) {
-                    c[0].position = collisionPosition;
-                    c[0].unmove(false, true);                    
+            var collisionbox = null;
+            var moveable = null;
+            if(c[1].type === "collisionbox") {
+                collisionbox = c[1];
+                moveable = c[0];
+            } else if(c[0].type === "collisionbox") {
+                collisionbox = c[0];
+                moveable = c[1];
+            }
+            if(collisionbox) {
+                var collisionPosition = {X: moveable.position.X, Y: moveable.position.Y};
+                moveable.unmove(true, false);
+                if(world.touches(moveable, collisionbox)) {
+                    moveable.position.X  = collisionPosition.X;
+                    moveable.position.Y  = collisionPosition.Y;
+                    moveable.unmove(false, true);                    
                 }
-                if(world.touches(c[0], c[1])) {
-                    c[0].unmove(true, false);
-                    console.log("corner unmove");
-                }
+                // if(world.touches(moveable, collisionbox)) {
+                //     moveable.unmove(true, false);
+                //     console.log("corner unmove");
+                // }
             }
         }
         if(c[1].type === "powerup") {
@@ -79,6 +89,28 @@ define("play", [
             ship.ammo--;
         }
     }
+    function worldScroll(ship, world) {
+        if(ship.position.X - world.offset.X < 200) {
+            world.offset.X -= (200 - (ship.position.X - world.offset.X));
+            if(world.offset.X < 0) world.offset.X = 0;
+        }
+        if(ship.position.X - world.offset.X > 600) {
+            world.offset.X += ship.position.X - world.offset.X - 600;
+            if(world.offset.X > world.width - 800) {
+                world.offset.X = world.width - 800;
+            }
+        }
+        if(ship.position.Y - world.offset.Y < 200) {
+            world.offset.Y -= (200 - (ship.position.Y - world.offset.Y));
+            if(world.offset.Y < 0) world.offset.Y = 0;
+        }
+        if(ship.position.Y - world.offset.Y > 400) {
+            world.offset.Y += ship.position.Y - world.offset.Y - 400;
+            if(world.offset.Y > world.height - 600) {
+                world.offset.Y = world.height - 600;
+            }
+        }        
+    }
     var play = {
         cargo: 6,
         mouse: {X: 0, Y: 0},
@@ -90,11 +122,14 @@ define("play", [
         init: function() {
             ship = Ship(Resources.ships);
             ship2 = Ship(Resources.ships);
+            ship2.target = ship.position;
+            ship2.speed = 0.2;
             ship2.position.Y = 600;
             world = World(Resources.map, Resources);
             world.add(enemies);
             world.add(ship);
-            enemies.add(ship2);
+            world.add(ship2);
+            //enemies.add(ship2);
             world.on("collision", collision);
             topBar = TopBar([
                 {
@@ -125,31 +160,19 @@ define("play", [
 
             if(down[keys.UP] || down[keys.W]) {
                 ship.forward(d);
-                if(ship.position.X - world.offset.X < 200) {
-                    world.offset.X -= (200 - (ship.position.X - world.offset.X));
-                    if(world.offset.X < 0) world.offset.X = 0;
-                }
-                if(ship.position.X - world.offset.X > 600) {
-                    world.offset.X += ship.position.X - world.offset.X - 600;
-                    if(world.offset.X > world.width - 800) {
-                        world.offset.X = world.width - 800;
-                    }
-                }
-                if(ship.position.Y - world.offset.Y < 200) {
-                    world.offset.Y -= (200 - (ship.position.Y - world.offset.Y));
-                    if(world.offset.Y < 0) world.offset.Y = 0;
-                }
-                if(ship.position.Y - world.offset.Y > 400) {
-                    world.offset.Y += ship.position.Y - world.offset.Y - 400;
-                    if(world.offset.Y > world.height - 600) {
-                        world.offset.Y = world.height - 600;
-                    }
-                }
+                worldScroll(ship, world);
                 ship.dirty = true;
+            } else {
+                if(ship.currentSpeed > 0) {
+                    ship.currentSpeed -= d / 5000;                    
+                    ship.forward(d, ship.currentSpeed);
+                    worldScroll(ship, world);
+                    ship.dirty = true;
+                }             
             }
-            enemies.each(function(enemy) {
-                enemy.angle = Math.atan2((enemy.position.X - ship.position.X), (ship.position.Y - enemy.position.Y)) + 1.5707963249999999;
-            });
+            // enemies.each(function(enemy) {
+            //     enemy.angle = Math.atan2((enemy.position.X - ship.position.X), (ship.position.Y - enemy.position.Y)) + 1.5707963249999999;
+            // });
             for(var i = 0; i < bullets.length; i++) {
                 bullets[i].draw();
             }

@@ -12,11 +12,13 @@ define("ship", ["canvas"], function(Canvas) {
             hp: 10,
             angle: 0,
             dirty: false,
-            speed: 0.1, //px/ms
+            speed: 0.3, //px/ms
+            currentSpeed: 0,
             cargo: 0,
             inventory: {},
             waypoints: [],
             nextWaypoint: 0,
+            target: null,
             draw: function(bb) {
                 var now = Date.now();
                 var d = now - before;
@@ -29,13 +31,15 @@ define("ship", ["canvas"], function(Canvas) {
                 if(bb) {
                     drawBB();
                 }
-                if(ship.waypoints.length > 0) {
+                if(ship.waypoints.length > 0 || ship.target !== null) {
                     ship.forward(d);
+                    ship.dirty = true;
                 }
                 before = now;
                 return dead;
             },
             die: function() {
+                console.log("kill ship");
                 dead = true;
             },
             unmove: function(x, y) {
@@ -45,13 +49,20 @@ define("ship", ["canvas"], function(Canvas) {
             lastPosition: function() {
                 return back;
             },
-            forward: function(d) {
-                if(ship.waypoints.length > 0 && ship.angle === 0 && ship.nextWaypoint === 0) {
+            forward: function(d, speed) {
+                ship.lastForward = Date.now();
+                speed = speed || ship.speed;
+                ship.currentSpeed = speed;
+                if(!ship.target && ship.waypoints.length > 0 && ship.angle === 0 && ship.nextWaypoint === 0) {
                     ship.nextWaypoint++;
-                    ship.angle = Math.atan2((ship.position.X - ship.waypoints[ship.nextWaypoint].X),
-                                            (ship.waypoints[ship.nextWaypoint].Y - ship.position.Y)) + 1.5707963249999999;
+                    ship.target = ship.waypoints[ship.nextWaypoint];
                 }
-                var distance = d * ship.speed;
+                if(ship.target) {
+                    ship.angle = Math.atan2((ship.position.X - ship.target.X),
+                                            (ship.target.Y - ship.position.Y)) + 1.5707963249999999;                    
+                }                    
+                
+                var distance = d * speed;
                 back = {X: ship.position.X, Y: ship.position.Y};
                 ship.position.X = ship.position.X + distance * Math.cos(ship.angle);
                 ship.position.Y = ship.position.Y + distance * Math.sin(ship.angle);
@@ -62,6 +73,7 @@ define("ship", ["canvas"], function(Canvas) {
                         if(ship.nextWaypoint > ship.waypoints.length - 1) {
                             ship.nextWaypoint = 0;
                         }
+                        ship.target = ship.waypoints[ship.nextWaypoint];
                         ship.angle = Math.atan2((ship.position.X - ship.waypoints[ship.nextWaypoint].X),
                                                 (ship.waypoints[ship.nextWaypoint].Y - ship.position.Y)) + 1.5707963249999999;
                         //ship.angle
