@@ -44,18 +44,18 @@ require(["game",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/test1.png",
-        "select": "audio/select.ogg",
-        "explosion": "audio/explosion.ogg",
-        "rapidfire": "audio/rapidfire.ogg",
-        "shoot": "audio/shoot.ogg",
-        "shoot2": "audio/shoot2.ogg",
-        "rocketsfx": "audio/rocket.ogg",
-        "rocket2": "audio/rocket2.ogg",
-        "pickup": "audio/pickup.ogg",
-        "strange": "audio/strange.ogg",
-        "enemyshoot": "audio/enemyshoot.ogg",
-        "error": "audio/error.ogg"
+        "map": "maps/test1.png"
+        // "select": "audio/select.ogg",
+        // "explosion": "audio/explosion.ogg",
+        // "rapidfire": "audio/rapidfire.ogg",
+        // "shoot": "audio/shoot.ogg",
+        // "shoot2": "audio/shoot2.ogg",
+        // "rocketsfx": "audio/rocket.ogg",
+        // "rocket2": "audio/rocket2.ogg",
+        // "pickup": "audio/pickup.ogg",
+        // "strange": "audio/strange.ogg",
+        // "enemyshoot": "audio/enemyshoot.ogg",
+        // "error": "audio/error.ogg"
     });
 
     var gameover = Menu(Canvas.element, [

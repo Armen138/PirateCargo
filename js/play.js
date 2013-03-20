@@ -26,7 +26,6 @@ define("play", [
     var bullets = [];
     var before = Date.now();
     var ship;
-    var ship2;
     var world;
     var enemies = Container();
 
@@ -54,7 +53,7 @@ define("play", [
                 if(world.touches(moveable, collisionbox)) {
                     moveable.position.X  = collisionPosition.X;
                     moveable.position.Y  = collisionPosition.Y;
-                    moveable.unmove(false, true);                    
+                    moveable.unmove(false, true);
                 }
                 // if(world.touches(moveable, collisionbox)) {
                 //     moveable.unmove(true, false);
@@ -81,14 +80,14 @@ define("play", [
             c[1].collect();
         }
     };
-    function shoot() {
-        if(ship.ammo > 0) {
-            var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
-            bullet.owner = ship;
-            world.add(bullet);
-            ship.ammo--;
-        }
-    }
+    // function shoot() {
+    //     if(ship.ammo > 0) {
+    //         var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
+    //         bullet.owner = ship;
+    //         world.add(bullet);
+    //         ship.ammo--;
+    //     }
+    // }
     function worldScroll(ship, world) {
         if(ship.position.X - world.offset.X < 200) {
             world.offset.X -= (200 - (ship.position.X - world.offset.X));
@@ -109,7 +108,7 @@ define("play", [
             if(world.offset.Y > world.height - 600) {
                 world.offset.Y = world.height - 600;
             }
-        }        
+        }
     }
     var play = {
         cargo: 6,
@@ -120,16 +119,14 @@ define("play", [
             }*/
         },
         init: function() {
-            ship = Ship(Resources.ships);
-            ship2 = Ship(Resources.ships);
-            ship2.target = ship.position;
-            ship2.speed = 0.2;
-            ship2.position.Y = 600;
-            world = World(Resources.map, Resources);
+            ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
+            world = World(Resources.map, Resources, ship);
+            ship.setWorld(world);
+            ship.on("death", function() {
+                console.log("player died");
+            });
             world.add(enemies);
             world.add(ship);
-            world.add(ship2);
-            //enemies.add(ship2);
             world.on("collision", collision);
             topBar = TopBar([
                 {
@@ -164,11 +161,11 @@ define("play", [
                 ship.dirty = true;
             } else {
                 if(ship.currentSpeed > 0) {
-                    ship.currentSpeed -= d / 5000;                    
+                    ship.currentSpeed -= d / 5000;
                     ship.forward(d, ship.currentSpeed);
                     worldScroll(ship, world);
                     ship.dirty = true;
-                }             
+                }
             }
             // enemies.each(function(enemy) {
             //     enemy.angle = Math.atan2((enemy.position.X - ship.position.X), (ship.position.Y - enemy.position.Y)) + 1.5707963249999999;
@@ -184,7 +181,7 @@ define("play", [
         keydown:  function(keyCode) {
             down[keyCode] = true;
             if(keyCode === keys.SPACE) {
-                shoot();
+                ship.shoot();
             }
         },
         keyup: function(keyCode) {

@@ -1,39 +1,75 @@
-define("ship", ["canvas"], function(Canvas) {
+/*jshint newcap:false, nonew:true */
+/*global console, alert */
+define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) {
     "use strict";
-    var Ship = function(image) {
+    var Ship = function(image, world) {
         var dead = false;
         var back = {X:0, Y: 0};
         var before = Date.now();
         var ship = {
             type: "ship",
             boundingbox: [-16, -16, 32, 32],
-            position: {X: 300, Y: 300},
+            position: {X: 300, Y: 300, ship: true},
             ammo: 12,
             hp: 10,
+            range: 200,
             angle: 0,
             dirty: false,
             speed: 0.3, //px/ms
             currentSpeed: 0,
+            fireDelay: 1000,
+            lastShot: 0,
             cargo: 0,
+            dead: false,
             inventory: {},
             waypoints: [],
             nextWaypoint: 0,
             target: null,
+            setWorld: function(w) {
+                world = w;
+            },
+            distance: function(other) {
+                return Math.sqrt((ship.position.X - other.position.X) *
+                                (ship.position.X - other.position.X) +
+                                (ship.position.Y - other.position.Y) *
+                                (ship.position.Y - other.position.Y) );
+            },
+            shoot: function() {
+                if(ship.ammo > 0) {
+                    var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
+                    bullet.owner = ship;
+                    world.add(bullet);
+                    ship.ammo--;
+                }
+            },
             draw: function(bb) {
                 var now = Date.now();
                 var d = now - before;
                 Canvas.context.save();
                 Canvas.context.translate(ship.position.X, ship.position.Y);
                 Canvas.context.rotate(ship.angle);
-                Canvas.context.drawImage(image, 264, 945, 22, 25,- 11, - 12, 22, 25);
+                Canvas.context.drawImage.apply(Canvas.context, image);
                 //Canvas.context.drawImage(image, 234, 807, 57, 39,-27, -19, 57, 39);
                 Canvas.context.restore();
                 if(bb) {
                     drawBB();
                 }
                 if(ship.waypoints.length > 0 || ship.target !== null) {
-                    ship.forward(d);
+                    var speed = ship.speed;
+                    if(ship.target && ship.target.ship) {
+                        speed *= 2;
+                        if(now - ship.lastShot > ship.fireDelay) {
+                            ship.shoot();
+                            ship.lastShot = now;
+                        }
+                    }
+                    ship.forward(d, speed);
                     ship.dirty = true;
+                }
+                if(ship.enemy  && !ship.enemy.dead && ship.distance(ship.enemy) < ship.range) {
+                    ship.target = ship.enemy.position;
+                } else if(ship.waypoints.length > 0){
+                    ship.target = ship.waypoints[ship.nextWaypoint];
                 }
                 before = now;
                 return dead;
@@ -41,6 +77,8 @@ define("ship", ["canvas"], function(Canvas) {
             die: function() {
                 console.log("kill ship");
                 dead = true;
+                ship.dead = true;
+                ship.fire("death");
             },
             unmove: function(x, y) {
                 if(x) ship.position.X = back.X;
@@ -59,9 +97,9 @@ define("ship", ["canvas"], function(Canvas) {
                 }
                 if(ship.target) {
                     ship.angle = Math.atan2((ship.position.X - ship.target.X),
-                                            (ship.target.Y - ship.position.Y)) + 1.5707963249999999;                    
-                }                    
-                
+                                            (ship.target.Y - ship.position.Y)) + 1.5707963249999999;
+                }
+
                 var distance = d * speed;
                 back = {X: ship.position.X, Y: ship.position.Y};
                 ship.position.X = ship.position.X + distance * Math.cos(ship.angle);
@@ -88,6 +126,7 @@ define("ship", ["canvas"], function(Canvas) {
             Canvas.context.strokeRect.apply(Canvas.context, ship.boundingbox);
             Canvas.context.restore();
         };
+        Events.attach(ship);
         ship.waypoints.next = 0;
         return ship;
     };

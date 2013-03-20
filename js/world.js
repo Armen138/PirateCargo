@@ -1,8 +1,25 @@
 /*jshint newcap:false, nonew:true */
 /*global console */
-define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship", "resources"], function(Canvas, Events, mapData, CollisionBox, PowerUp, Ship, Resources) {
+define("world", [
+    "canvas",
+    "events",
+    "mapdata",
+    "collisionbox",
+    "powerup",
+    "ship",
+    "resources"],
+    function(
+        Canvas,
+        Events,
+        mapData,
+        CollisionBox,
+        PowerUp,
+        Ship,
+        Resources) {
     "use strict";
-    var World = function(map, Resources) {
+
+
+    var World = function(map, Resources, player) {
         var entities = [];
         var touches = function(ent1, ent2) {
             if (ent1 !== ent2 &&
@@ -15,7 +32,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
                     return true;
                 }
             }
-            return false;    
+            return false;
         };
 
         var collides = function(entity) {
@@ -60,6 +77,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
         };
 
         var world = {
+            powerupCount: 0,
             width: 64*30,
             height: 64*30,
             add: function(e) {
@@ -121,7 +139,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
 
                     //Canvas.context.fillText(sign.message, 400, 250);
                     Canvas.context.restore();
-                }                
+                }
             }
         };
         Events.attach(world);
@@ -136,6 +154,7 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
             },
             cargo: function(layer) {
                 for(var i = 0; i < layer.objects.length; i++) {
+                    world.powerupCount++;
                     world.add(PowerUp(Resources.chest, dummy, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
                 }
             },
@@ -154,9 +173,12 @@ define("world", ["canvas", "events", "mapdata", "collisionbox", "powerup", "ship
                         X: layer.objects[i].x + layer.objects[i].polyline[0].x,
                         Y: layer.objects[i].y + layer.objects[i].polyline[0].y
                     };
-                    var ship = Ship(Resources.ships);
+                    var sprite = [Resources.ships, 233, 923, 31, 39, -15, -19, 31, 39];
+                    var sprite1 = [Resources.ships, 264, 887, 31, 33, -15, -16, 31, 33];
+                    var ship = Ship(sprite1, world);
                     ship.speed = 0.1;
                     ship.position = pos;
+                    ship.enemy = player;
                     world.add(ship);
                     ship.waypoints = [];
                     for(var w = 0; w < layer.objects[i].polyline.length; w++) {
