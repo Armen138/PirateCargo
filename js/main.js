@@ -44,7 +44,7 @@ require(["game",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/test1.png"
+        "map": "maps/level1.png"
         // "select": "audio/select.ogg",
         // "explosion": "audio/explosion.ogg",
         // "rapidfire": "audio/rapidfire.ogg",

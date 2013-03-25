@@ -128,6 +128,15 @@ define("play", [
             world.add(enemies);
             world.add(ship);
             world.on("collision", collision);
+            world.on("exit", function() {
+                if(ship.cargo < world.powerupCount) {
+                    console.log("You require at least " + world.powerupCount + " pieces of cargo to exit the level");
+                } else {
+                    console.log("level complete");
+                }
+                //console.log("exit");
+            });
+            worldScroll(ship, world);
             topBar = TopBar([
                 {
                     obj: ship,
@@ -204,5 +213,6 @@ define("play", [
             var y = e.clientY - Canvas.position.Y + world.offset.Y;
         ship.angle = Math.atan2((ship.position.X - x), (y - ship.position.Y)) + 1.5707963249999999;
     });*/
+    
     return play;
 });

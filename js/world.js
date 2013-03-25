@@ -44,6 +44,13 @@ define("world", [
             }
             return collisionObjects;
         };
+
+        var exitPortal = function() {
+            if(touches(player, world.exit)) {
+                world.fire("exit");
+            }
+        };
+
         var collision = function() {
             for(var i = 0; i < entities.length; i++) {
                 if(entities[i].dirty) {
@@ -78,8 +85,8 @@ define("world", [
 
         var world = {
             powerupCount: 0,
-            width: 64*30,
-            height: 64*30,
+            width: 64 * mapData.layers[0].width,
+            height: 64 * mapData.layers[0].height,
             add: function(e) {
                 entities.push(e);
             },
@@ -87,6 +94,7 @@ define("world", [
             touches: touches,
             draw: function() {
                 collision();
+                exitPortal();
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
@@ -154,8 +162,19 @@ define("world", [
             },
             cargo: function(layer) {
                 for(var i = 0; i < layer.objects.length; i++) {
-                    world.powerupCount++;
-                    world.add(PowerUp(Resources.chest, dummy, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));
+                    console.log(layer.objects[i]);
+                    if(layer.objects[i].name !== "") {
+                        if(layer.objects[i].name === "startposition" || layer.objects[i].name === "start") {
+                            player.position.X = layer.objects[i].x;
+                            player.position.Y = layer.objects[i].y;
+                        }
+                        if(layer.objects[i].name === "exit") {
+                            world.exit = CollisionBox(layer.objects[i]);
+                        }
+                    } else {                        
+                        world.powerupCount++;
+                        world.add(PowerUp(Resources.chest, dummy, {X: layer.objects[i].x, Y: layer.objects[i].y }, "cargo"));                        
+                    }
                 }
             },
             signs: function(layer) {

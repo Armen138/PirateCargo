@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="space-blks-1.034" tilewidth="64" tileheight="64">
+  <image source="space-blks-1.034.png" width="1024" height="768"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzTERACAQA8FYwBUSAB88yCcqMhRXbL1H0gi7tqyFTV5eXl5eXl5eXl5e3g/fsh627QG6uFr/
+  </data>
+ </layer>
+ <objectgroup name="collision" width="30" height="30">
+  <object x="0" y="0" width="64" height="1920"/>
+  <object x="64" y="1856" width="1856" height="64"/>
+  <object x="1856" y="0" width="64" height="1856"/>
+  <object x="64" y="0" width="1792" height="64"/>
+ </objectgroup>
+</map>
