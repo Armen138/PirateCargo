@@ -87,6 +87,14 @@ define("world", [
             powerupCount: 0,
             width: 64 * mapData.layers[0].width,
             height: 64 * mapData.layers[0].height,
+            remove: function(item) {
+                for(var i = entities.length -1; i >= 0; i++) {
+                    if(entities[i] === item) {
+                        entities.splice(i, 1);
+                        break;
+                    }
+                }
+            },
             add: function(e) {
                 entities.push(e);
             },

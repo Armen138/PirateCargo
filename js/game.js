@@ -44,6 +44,9 @@ define("game",
         if(game.state && game.state.keyup) {
             game.state.keyup(e.keyCode);
         }
+        if(e.keyCode === 27) {
+            game.state = game.paused;
+        }
     });
     window.addEventListener("keydown", function(e) {
         if(game.state && game.state.keydown) {

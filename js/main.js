@@ -44,7 +44,7 @@ require(["game",
         "star": "images/star.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/level1.png"
+        "map": "maps/intro.png"
         // "select": "audio/select.ogg",
         // "explosion": "audio/explosion.ogg",
         // "rapidfire": "audio/rapidfire.ogg",
@@ -110,6 +110,7 @@ require(["game",
             {
                 label: "Resume",
                 action: function() {
+                    play.getWorld().pausetime = paused.lifetime;
                     game.state = play;
                 }
             },
@@ -132,7 +133,7 @@ require(["game",
             {
                 label: "Play",
                 action: function() {
-                    play.reset();
+                    play.respawn();
                     play.mode = "waves";
                     game.state = play;
                 }
@@ -203,6 +204,6 @@ require(["game",
     //         }
     //     }
     // });
-
+    game.paused = paused;
     game.state = home;
 });

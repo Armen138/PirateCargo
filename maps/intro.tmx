@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="15" height="15" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="space-blks-1.034" tilewidth="64" tileheight="64">
+  <image source="space-blks-1.034.png" width="1024" height="768"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJwrZ2BgiCADVwBxFBALkoEjqajXkIB6QxrZO5j1zhiCbh7q8VsGxB5k4FIgBgCkgB9S
+  </data>
+ </layer>
+ <objectgroup name="collision" width="15" height="15">
+  <object x="896" y="0" width="64" height="960"/>
+  <object x="0" y="896" width="896" height="64"/>
+  <object x="0" y="64" width="64" height="832"/>
+  <object x="0" y="0" width="896" height="64"/>
+ </objectgroup>
+ <objectgroup name="enemies" width="15" height="15">
+  <object x="320" y="256">
+   <polyline points="0,0 0,448 320,448 320,0 0,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="cargo" width="15" height="15">
+  <object x="448" y="384"/>
+  <object x="448" y="448"/>
+  <object x="448" y="512"/>
+  <object x="448" y="576"/>
+  <object x="512" y="576"/>
+  <object x="512" y="512"/>
+  <object x="512" y="448"/>
+  <object x="512" y="384"/>
+  <object name="exit" x="768" y="448" width="64" height="64"/>
+  <object name="startposition" x="192" y="768"/>
+ </objectgroup>
+ <objectgroup name="signs" width="15" height="15">
+  <object name="Beware" x="320" y="768">
+   <properties>
+    <property name="message" value="You need all 8 pieces of cargo to go through the exit."/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

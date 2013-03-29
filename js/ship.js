@@ -45,6 +45,9 @@ define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) 
             draw: function(bb) {
                 var now = Date.now();
                 var d = now - before;
+                if(d > 64) {
+                    d = 17;
+                }
                 Canvas.context.save();
                 Canvas.context.translate(ship.position.X, ship.position.Y);
                 Canvas.context.rotate(ship.angle);

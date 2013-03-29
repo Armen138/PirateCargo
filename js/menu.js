@@ -90,6 +90,9 @@ define("menu", ["easing"], function(easing) {
                 to = width;
                 position.X = from;
             },
+            lifetime: function() {
+                return Date.now() - start;
+            },
             clear: function(cb) {
                 paused.time = Date.now() - start;
                 start = Date.now();

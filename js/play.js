@@ -31,11 +31,23 @@ define("play", [
 
 
     var collision = function(c) {
+        function killemall(e1, e2) {
+            e1.die();
+            e2.die();
+            if(e1.player || e2.player) {
+                setTimeout(function() {
+                    play.respawn();
+                }, 1000);
+            }
+        }
+        if(c[0].type === "ship" && c[1].type === "ship") {
+            killemall(c[0], c[1]);
+            return;
+        }
         if(c[0].type === "bullet" || c[1].type === "bullet") {
             if ((c[0].owner && c[0].owner !== c[1]) ||
                 (c[1].owner && c[1].owner !== c[0])) {
-                c[0].die();
-                c[1].die();
+                killemall(c[0], c[1]);
             }
         } else {
             var collisionbox = null;
@@ -61,7 +73,7 @@ define("play", [
                 // }
             }
         }
-        if(c[1].type === "powerup") {
+        if(c[1].type === "powerup" && c[0].player) {
             if(!ship.inventory[c[1].name]) {
                 ship.inventory[c[1].name] = {};
                 ship.inventory[c[1].name].count = 0;
@@ -72,7 +84,7 @@ define("play", [
                 };
                 QuickButtons.buttons.push(ship.inventory[c[1].name].button);
 
-            }
+            }            
             ship.inventory[c[1].name].count += 1;
             ship.cargo++;
             ship.inventory[c[1].name].button.label = ship.inventory[c[1].name].count + "";
@@ -113,13 +125,22 @@ define("play", [
     var play = {
         cargo: 6,
         mouse: {X: 0, Y: 0},
+        getWorld: function() {
+            return world;
+        },
         reset: function() {
             /*if(ship) {
                 ship.ammo = 12;
             }*/
         },
-        init: function() {
+        respawn: function() {
+            /*world.remove(ship);
             ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
+            ship.player = true;            
+            ship.setWorld(world);
+            world.add(ship);*/
+            ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
+            ship.player = true;
             world = World(Resources.map, Resources, ship);
             ship.setWorld(world);
             ship.on("death", function() {
@@ -153,9 +174,17 @@ define("play", [
             ]);
             QuickButtons.buttons = [];
         },
+        init: function() {
+            if(!ship) {
+                play.respawn();
+            }
+        },
         run: function() {
             var now = Date.now();
             var d = now - before;
+            if(d > 64) {
+                d = 17;
+            }
             world.draw();
             if(down[keys.LEFT] || down[keys.A]) {
                 ship.angle -= 0.1;
@@ -198,7 +227,7 @@ define("play", [
         },
         click: function(mouse) {
             //shoot something
-            shoot();
+            //shoot();
             QuickButtons.click(mouse);
         },
         mousemove: function(mouse) {
