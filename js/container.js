@@ -3,6 +3,9 @@ define("container", function() {
 		var items = [];
 		var container = {
 			noncollider: true,
+			count: function() {
+				items.length;
+			},
 			add: function(item) {
 				items.push(item);
 			},

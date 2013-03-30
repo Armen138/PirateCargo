@@ -42,6 +42,7 @@ require(["game",
         "rocket": "images/rocket.png",
         "homing": "images/on-target.png",
         "star": "images/star.png",
+        "particle": "images/particle.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
         "map": "maps/intro.png"

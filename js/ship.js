@@ -1,11 +1,12 @@
 /*jshint newcap:false, nonew:true */
 /*global console, alert */
-define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) {
+define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(Canvas, Bullet, Events, effects, Particles) {
     "use strict";
     var Ship = function(image, world) {
         var dead = false;
         var back = {X:0, Y: 0};
         var before = Date.now();
+        var explosion = null;
         var ship = {
             type: "ship",
             boundingbox: [-16, -16, 32, 32],
@@ -21,6 +22,7 @@ define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) 
             lastShot: 0,
             cargo: 0,
             dead: false,
+            kills: 0,
             inventory: {},
             waypoints: [],
             nextWaypoint: 0,
@@ -43,6 +45,10 @@ define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) 
                 }
             },
             draw: function(bb) {
+                if(explosion !== null) {
+                    explosion.draw();
+                    return dead;
+                }
                 var now = Date.now();
                 var d = now - before;
                 if(d > 64) {
@@ -70,6 +76,7 @@ define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) 
                     ship.dirty = true;
                 }
                 if(ship.enemy  && !ship.enemy.dead && ship.distance(ship.enemy) < ship.range) {
+                    ship.enemy.seen = true;
                     ship.target = ship.enemy.position;
                 } else if(ship.waypoints.length > 0){
                     ship.target = ship.waypoints[ship.nextWaypoint];
@@ -78,10 +85,15 @@ define("ship", ["canvas", "bullet", "events"], function(Canvas, Bullet, Events) 
                 return dead;
             },
             die: function() {
+                var particleOptions = effects.explosion();
+                particleOptions.position = ship.position;
+                explosion = Particles(particleOptions);
+                explosion.on("death", function() {
+                    dead = true;
+                    ship.dead = true;
+                    ship.fire("death");                    
+                });
                 console.log("kill ship");
-                dead = true;
-                ship.dead = true;
-                ship.fire("death");
             },
             unmove: function(x, y) {
                 if(x) ship.position.X = back.X;

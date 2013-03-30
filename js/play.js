@@ -48,6 +48,11 @@ define("play", [
             if ((c[0].owner && c[0].owner !== c[1]) ||
                 (c[1].owner && c[1].owner !== c[0])) {
                 killemall(c[0], c[1]);
+                if(c[0].owner) {
+                    c[0].owner.kills++;
+                } else {
+                    c[1].owner.kills++;
+                }
             }
         } else {
             var collisionbox = null;
@@ -153,6 +158,16 @@ define("play", [
                 if(ship.cargo < world.powerupCount) {
                     console.log("You require at least " + world.powerupCount + " pieces of cargo to exit the level");
                 } else {
+                    if(ship.kills > 0) {
+                        if(ship.kills == enemies.count()) {
+                            console.log("massacre: killed all enemies");
+                        }
+                    } else {
+                        console.log("pacifist: no kills");
+                    }
+                    if(!ship.seen) {
+                        console.log("ghost: never seen by an enemy");
+                    }
                     console.log("level complete");
                 }
                 //console.log("exit");

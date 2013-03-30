@@ -1,4 +1,4 @@
-define("bullet", ["canvas"], function(Canvas) {
+define("bullet", ["canvas", "effects", "particles"], function(Canvas, effects, Particles) {
     function distance(p1, p2) {
         return Math.max(
                 Math.abs(p1.X - p2.X),
@@ -10,6 +10,12 @@ define("bullet", ["canvas"], function(Canvas) {
         if(!options) {
             options = {};
         }
+        var particleSettings = effects.bullet();
+        particleSettings.position = position;
+        var trail = Particles(particleSettings);
+        trail.on("death", function() {
+            dead = true;
+        });
         var lastPosition = {X: position.X, Y: position.Y};
         var start = Date.now();
         var speed = options.speed || 0.7;
@@ -26,7 +32,8 @@ define("bullet", ["canvas"], function(Canvas) {
             dirty: true,
             boundingbox: [-8, -8, 16, 16],
             die: function() {
-                    dead = true;
+                    //dead = true;
+                    trail.kill();
             },
             draw: function(bb) {
                 var now = Date.now();
@@ -34,9 +41,10 @@ define("bullet", ["canvas"], function(Canvas) {
                 position.X += distance * Math.cos(options.angle);
                 position.Y += distance * Math.sin(options.angle);
                 travelled += distance;
-                Canvas.context.fillRect(position.X, position.Y, 8, 8);
+                //Canvas.context.fillRect(position.X, position.Y, 8, 8);
                 if(travelled > range) {
-                    dead = true;
+                    //dead = true;
+                    trail.kill();
                 }
 
                 if(bb) {
@@ -48,6 +56,7 @@ define("bullet", ["canvas"], function(Canvas) {
                 }
 
                 b.dirty = true;
+                trail.draw();
                 lastDraw = now;
                 return dead;
             }
