@@ -32,8 +32,8 @@ define("play", [
 
     var collision = function(c) {
         function killemall(e1, e2) {
-            e1.die();
-            e2.die();
+            if(e1.type !== "powerup") { e1.die(); }
+            if(e2.type !== "powerup") { e2.die(); }
             if(e1.player || e2.player) {
                 setTimeout(function() {
                     play.respawn();
@@ -91,7 +91,12 @@ define("play", [
 
             }            
             ship.inventory[c[1].name].count += 1;
-            ship.cargo++;
+            if(c[1].name === "cargo") {
+                ship.cargo++;
+                if(ship.cargo === world.powerupCount) {
+                    world.exit.active = true;
+                }                
+            }
             ship.inventory[c[1].name].button.label = ship.inventory[c[1].name].count + "";
             //QuickButtons.buttons[0].label = ship.cargo + "";
             c[1].collect();
@@ -146,7 +151,17 @@ define("play", [
             world.add(ship);*/
             ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
             ship.player = true;
-            world = World(Resources.map, Resources, ship);
+            ship.inventory.bullets = {
+                "count" : 12,
+                "button": {
+                    "label": 12,
+                    "icon": Resources.bullets,
+                    "action": function() {
+                        ship.shoot();
+                    }
+                }
+            };                       
+            world = World(Resources.map, ship);
             ship.setWorld(world);
             ship.on("death", function() {
                 console.log("player died");
@@ -159,7 +174,7 @@ define("play", [
                     console.log("You require at least " + world.powerupCount + " pieces of cargo to exit the level");
                 } else {
                     if(ship.kills > 0) {
-                        if(ship.kills == enemies.count()) {
+                        if(enemies.count() === 0) {
                             console.log("massacre: killed all enemies");
                         }
                     } else {
@@ -188,6 +203,7 @@ define("play", [
                 }
             ]);
             QuickButtons.buttons = [];
+            QuickButtons.buttons.push(ship.inventory.bullets.button);
         },
         init: function() {
             if(!ship) {
@@ -226,7 +242,7 @@ define("play", [
             for(var i = 0; i < bullets.length; i++) {
                 bullets[i].draw();
             }
-            topBar.draw();
+            //topBar.draw();
             QuickButtons.draw();
             Canvas.context.fillRect(play.mouse.X, play.mouse.Y, 10, 10);
             before = now;

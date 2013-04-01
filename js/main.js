@@ -45,7 +45,9 @@ require(["game",
         "particle": "images/particle.png",
         "gameover": "images/gameover.png",
         "winner": "images/winner.png",
-        "map": "maps/intro.png"
+        "bullets": "images/bullets.png",
+        //"map": "maps/intro.png",
+        "spacetiles": "maps/spacetiles.png"
         // "select": "audio/select.ogg",
         // "explosion": "audio/explosion.ogg",
         // "rapidfire": "audio/rapidfire.ogg",

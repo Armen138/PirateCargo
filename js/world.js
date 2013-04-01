@@ -19,7 +19,46 @@ define("world", [
     "use strict";
 
 
-    var World = function(map, Resources, player) {
+    var renderMap = function(data) {        
+        var tiles = null;
+        for(var i = 0; i < data.layers.length; i++) {
+            if(data.layers[i].type === "tilelayer") {
+                tiles = data.layers[i];
+                break;
+            }
+        }
+        var tileHeight = data.tilesets[0].tileheight;
+        var tileWidth = data.tilesets[0].tilewidth;
+        var mapSize = { width: tileWidth * tiles.width, 
+                        height: tileHeight * tiles.height };
+        function getTile(index, setsize) {
+            return {X: (index % setsize.width) * tileWidth,
+                    Y: (index / setsize.width | 0) * tileHeight };
+        }                        
+        var map = Canvas.create(mapSize);
+        //map.context.drawImage(Resources.spacetiles, 0, 0);
+        for(var tile = 0; tile < tiles.data.length; tile++) {
+            var source = getTile(tiles.data[tile] - 1, 
+                            { width: 16 /*data.tilesets[0].imagewidth / data.tilesets[0].tilewidth*/,
+                              height: data.tilesets[0].imageheight / data.tilesets[0].tileheight });
+            var destination = getTile(tile, tiles);
+            console.log(source);
+            console.log(destination);
+            map.context.drawImage(Resources.spacetiles, 
+                                    source.X, 
+                                    source.Y, 
+                                    tileWidth, 
+                                    tileHeight,
+                                    destination.X,
+                                    destination.Y,
+                                    tileWidth,
+                                    tileHeight);
+        }
+        return map.element;
+    };
+
+    var World = function(mxp, player) {
+        var map = renderMap(mapData);
         var entities = [];
         var touches = function(ent1, ent2) {
             if (ent1 !== ent2 &&
@@ -38,7 +77,7 @@ define("world", [
         var collides = function(entity) {
             var collisionObjects = [];
             for(var i = 0; i < entities.length; i++) {
-                if(touches(entities[i], entity)) {
+                if(!entities[i].dead && touches(entities[i], entity)) {
                     collisionObjects.push(entities[i]);
                 }
             }
@@ -49,6 +88,9 @@ define("world", [
             if(touches(player, world.exit)) {
                 world.fire("exit");
             }
+            if(world.exit.active) {
+                Canvas.context.drawImage(Resources.spacetiles, 448, 640, 64, 64, world.exit.position.X - 32, world.exit.position.Y - 32, 64, 64);    
+            }            
         };
 
         var collision = function() {
@@ -102,10 +144,11 @@ define("world", [
             touches: touches,
             draw: function() {
                 collision();
-                exitPortal();
+//                exitPortal();
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
+                exitPortal();
                 for(var i = entities.length - 1; i >= 0; --i) {
                     if(entities[i].draw()) {
                         entities.splice(i, 1);
@@ -231,3 +274,4 @@ define("world", [
     };
     return World;
 });
+

@@ -42,6 +42,10 @@ define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(
                     bullet.owner = ship;
                     world.add(bullet);
                     ship.ammo--;
+                    if(ship.inventory.bullets) {
+                        ship.inventory.bullets.count = ship.ammo;
+                        ship.inventory.bullets.button.label = ship.ammo;
+                    }
                 }
             },
             draw: function(bb) {
@@ -88,9 +92,9 @@ define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(
                 var particleOptions = effects.explosion();
                 particleOptions.position = ship.position;
                 explosion = Particles(particleOptions);
+                ship.dead = true;
                 explosion.on("death", function() {
-                    dead = true;
-                    ship.dead = true;
+                    dead = true;                    
                     ship.fire("death");                    
                 });
                 console.log("kill ship");

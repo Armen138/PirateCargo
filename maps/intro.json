@@ -293,7 +293,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"space-blks-1.034.png",
+         "image":"spacetiles",
          "imageheight":768,
          "imagewidth":1024,
          "margin":0,

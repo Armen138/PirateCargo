@@ -4,7 +4,7 @@ define("container", function() {
 		var container = {
 			noncollider: true,
 			count: function() {
-				items.length;
+				return items.length;
 			},
 			add: function(item) {
 				items.push(item);
