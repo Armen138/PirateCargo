@@ -4,7 +4,7 @@
 	"use strict";
 	function audio(files, callback) {
 		var file = new Audio(),
-			maxChannels = 8,
+			maxChannels = 3,
 			channels = [],
 			fileType = files.substr(files.lastIndexOf(".") + 1).toLowerCase();
 
@@ -21,7 +21,10 @@
 				}
 			},
 			play: function(loop) {
-				for(var i = 0; i < channels.length; i++) {
+				for(var i = 0; i < maxChannels; i++) {
+					if(i >= channels.length) {
+						channels[i] = new Audio(files);
+					}
 					if(channels[i].currentTime === 0 || channels[i].ended) {
 						channels[i].loop = loop;
 						channels[i].play();
@@ -47,9 +50,9 @@
 			callback(false);
 			console.log("This filetype cannot be played on this browser: " + fileType);
 		} else {
-			for(var i = 0; i < maxChannels; i++) {
+			//for(var i = 0; i < maxChannels; i++) {
 				channels.push(new Audio(files));
-			}
+			//}
 			callback(true);
 		}
 		return rfile;

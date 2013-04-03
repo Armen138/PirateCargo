@@ -1,0 +1,2 @@
+#!/bin/bash
+cat require.mod.js bullet.js canvas.js collisionbox.js container.js easing.js effects.js events.js game.js gamepad.js keys.js main.js menu.js particles.js play.js powerup.js quickbuttons.js racket.js raf.js require.js resources.js ship.js stats.min.js world.js gui/badge.js gui/element.js gui/modal.js gui/label.js > PirateCargo.js

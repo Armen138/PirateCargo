@@ -17,4 +17,4 @@ define("collisionbox", function() {
 		return collisionbox;
 	}
 	return CollisionBox;
-})
+});

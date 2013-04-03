@@ -1,4 +1,4 @@
-define(["canvas"], function(Canvas) {
+define("quickbuttons", ["canvas"], function(Canvas) {
 	var size = { width: 0 * 74 + 20, height: 84 };	
 	var position = { X: Canvas.width / 2, Y: Canvas.height - size.height };
 	var quickButtons = {

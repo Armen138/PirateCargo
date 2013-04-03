@@ -1,6 +1,18 @@
 /*jshint newcap:false, nonew:true */
 /*global console, alert */
-define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(Canvas, Bullet, Events, effects, Particles) {
+define("ship", [
+    "canvas", 
+    "bullet", 
+    "events", 
+    "effects", 
+    "resources",
+    "particles"], function(
+        Canvas, 
+        Bullet, 
+        Events, 
+        effects,
+        Resources, 
+        Particles) {
     "use strict";
     var Ship = function(image, world) {
         var dead = false;
@@ -46,6 +58,7 @@ define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(
                         ship.inventory.bullets.count = ship.ammo;
                         ship.inventory.bullets.button.label = ship.ammo;
                     }
+                    Resources.shoot.play();
                 }
             },
             draw: function(bb) {
@@ -98,6 +111,7 @@ define("ship", ["canvas", "bullet", "events", "effects", "particles"], function(
                     ship.fire("death");                    
                 });
                 console.log("kill ship");
+                Resources.explosion.play();
             },
             unmove: function(x, y) {
                 if(x) ship.position.X = back.X;

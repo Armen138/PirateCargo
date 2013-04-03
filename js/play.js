@@ -3,32 +3,29 @@
 define("play", [
         "canvas",
         "resources",
-        "topbar",
         "keys",
         "ship",
         "bullet",
         "world",
         "container",
-        "quickbuttons"
+        "quickbuttons",
+        "events"        
     ],function(Canvas,
             Resources,
-            TopBar,
             keys,
             Ship,
             Bullet,
             World,
             Container,
-            QuickButtons) {
+            QuickButtons,
+            Events) {
     "use strict";
 
     var down = {};
-    var topBar;
     var bullets = [];
     var before = Date.now();
     var ship;
-    var world;
-    var enemies = Container();
-
+    var world;  
 
     var collision = function(c) {
         function killemall(e1, e2) {
@@ -48,11 +45,6 @@ define("play", [
             if ((c[0].owner && c[0].owner !== c[1]) ||
                 (c[1].owner && c[1].owner !== c[0])) {
                 killemall(c[0], c[1]);
-                if(c[0].owner) {
-                    c[0].owner.kills++;
-                } else {
-                    c[1].owner.kills++;
-                }
             }
         } else {
             var collisionbox = null;
@@ -72,10 +64,6 @@ define("play", [
                     moveable.position.Y  = collisionPosition.Y;
                     moveable.unmove(false, true);
                 }
-                // if(world.touches(moveable, collisionbox)) {
-                //     moveable.unmove(true, false);
-                //     console.log("corner unmove");
-                // }
             }
         }
         if(c[1].type === "powerup" && c[0].player) {
@@ -87,9 +75,9 @@ define("play", [
                     icon: c[1].image,
                     action: c[1].collect
                 };
-                QuickButtons.buttons.push(ship.inventory[c[1].name].button);
-
+                QuickButtons.buttons.push(ship.inventory[c[1].name].button);                
             }            
+            Resources.pickup.play();
             ship.inventory[c[1].name].count += 1;
             if(c[1].name === "cargo") {
                 ship.cargo++;
@@ -98,18 +86,25 @@ define("play", [
                 }                
             }
             ship.inventory[c[1].name].button.label = ship.inventory[c[1].name].count + "";
-            //QuickButtons.buttons[0].label = ship.cargo + "";
             c[1].collect();
         }
     };
-    // function shoot() {
-    //     if(ship.ammo > 0) {
-    //         var bullet = Bullet({X: ship.position.X, Y: ship.position.Y}, [], {angle: ship.angle});
-    //         bullet.owner = ship;
-    //         world.add(bullet);
-    //         ship.ammo--;
-    //     }
-    // }
+
+    var levelCache = {};
+    function fetchLevel(level, callback) {
+        if(levelCache[level]) {
+            callback(levelCache[level]);
+            return;            
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "maps/" + level + ".json", true);
+        xhr.onload = function() {            
+            levelCache[level] = JSON.parse(xhr.responseText);
+            callback(levelCache[level]);
+        };
+        xhr.send(null);
+    }
+
     function worldScroll(ship, world) {
         if(ship.position.X - world.offset.X < 200) {
             world.offset.X -= (200 - (ship.position.X - world.offset.X));
@@ -134,6 +129,7 @@ define("play", [
     }
     var play = {
         cargo: 6,
+        level: "intro",
         mouse: {X: 0, Y: 0},
         getWorld: function() {
             return world;
@@ -144,11 +140,7 @@ define("play", [
             }*/
         },
         respawn: function() {
-            /*world.remove(ship);
-            ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
-            ship.player = true;            
-            ship.setWorld(world);
-            world.add(ship);*/
+            down = {};
             ship = Ship([Resources.ships, 264, 945, 22, 25, -11, -12, 22, 25], world);
             ship.player = true;
             ship.inventory.bullets = {
@@ -160,55 +152,47 @@ define("play", [
                         ship.shoot();
                     }
                 }
-            };                       
-            world = World(Resources.map, ship);
-            ship.setWorld(world);
-            ship.on("death", function() {
-                console.log("player died");
-            });
-            world.add(enemies);
-            world.add(ship);
-            world.on("collision", collision);
-            world.on("exit", function() {
-                if(ship.cargo < world.powerupCount) {
-                    console.log("You require at least " + world.powerupCount + " pieces of cargo to exit the level");
-                } else {
-                    if(ship.kills > 0) {
-                        if(enemies.count() === 0) {
-                            console.log("massacre: killed all enemies");
+            };                   
+            fetchLevel(play.level, function(mapData) {
+                world = World(mapData, ship);
+                ship.setWorld(world);
+                ship.on("death", function() {
+                    console.log("player died");
+                });
+                //world.add(enemies);
+                world.add(ship);
+                world.on("collision", collision);
+                world.on("exit", function() {
+                    if(ship.cargo === world.powerupCount) {
+                        var badges = [];
+                        console.log("kills: " + ship.kills + ", enemies: " + world.enemyCount);
+                        if(ship.kills > 0) {
+                            if(world.enemyCount === ship.kills) {                            
+                                badges.push("butcher");
+                            }
+                        } else {
+                            badges.push("pacifist");
                         }
-                    } else {
-                        console.log("pacifist: no kills");
+                        if(!ship.seen) {
+                            badges.push("ghost");
+                        }
+                        console.log("level complete");
+                        play.fire("win", {
+                            badges: badges
+                        });                    
                     }
-                    if(!ship.seen) {
-                        console.log("ghost: never seen by an enemy");
-                    }
-                    console.log("level complete");
-                }
-                //console.log("exit");
+                    //console.log("exit");
+                });
+                worldScroll(ship, world);
+                QuickButtons.buttons = [];
+                QuickButtons.buttons.push(ship.inventory.bullets.button);                
             });
-            worldScroll(ship, world);
-            topBar = TopBar([
-                {
-                    obj: ship,
-                    prop: "ammo",
-                    name: "ammo",
-                    type: "string"
-                },
-                {
-                    obj: ship,
-                    prop: "cargo",
-                    name: "cargo",
-                    type: "string"
-                }
-            ]);
-            QuickButtons.buttons = [];
-            QuickButtons.buttons.push(ship.inventory.bullets.button);
         },
         init: function() {
             if(!ship) {
                 play.respawn();
             }
+            Resources.music.play(true);
         },
         run: function() {
             var now = Date.now();
@@ -236,15 +220,7 @@ define("play", [
                     ship.dirty = true;
                 }
             }
-            // enemies.each(function(enemy) {
-            //     enemy.angle = Math.atan2((enemy.position.X - ship.position.X), (ship.position.Y - enemy.position.Y)) + 1.5707963249999999;
-            // });
-            for(var i = 0; i < bullets.length; i++) {
-                bullets[i].draw();
-            }
-            //topBar.draw();
             QuickButtons.draw();
-            Canvas.context.fillRect(play.mouse.X, play.mouse.Y, 10, 10);
             before = now;
         },
         keydown:  function(keyCode) {
@@ -264,15 +240,13 @@ define("play", [
         mousemove: function(mouse) {
             play.mouse = mouse;
         },
-        clear: function(cb) { cb(); }
+        clear: function(cb) { 
+            Resources.music.stop();
+            cb(); 
+        }
     };
 
-    /*
-    window.addEventListener("mousemove", function(e) {
-            var x = e.clientX - Canvas.position.X + world.offset.X;
-            var y = e.clientY - Canvas.position.Y + world.offset.Y;
-        ship.angle = Math.atan2((ship.position.X - x), (y - ship.position.Y)) + 1.5707963249999999;
-    });*/
+    Events.attach(play);
     
     return play;
 });

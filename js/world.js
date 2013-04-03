@@ -3,7 +3,7 @@
 define("world", [
     "canvas",
     "events",
-    "mapdata",
+    //"mapdata",
     "collisionbox",
     "powerup",
     "ship",
@@ -11,7 +11,7 @@ define("world", [
     function(
         Canvas,
         Events,
-        mapData,
+        //mapData,
         CollisionBox,
         PowerUp,
         Ship,
@@ -42,8 +42,8 @@ define("world", [
                             { width: 16 /*data.tilesets[0].imagewidth / data.tilesets[0].tilewidth*/,
                               height: data.tilesets[0].imageheight / data.tilesets[0].tileheight });
             var destination = getTile(tile, tiles);
-            console.log(source);
-            console.log(destination);
+            //console.log(source);
+            //console.log(destination);
             map.context.drawImage(Resources.spacetiles, 
                                     source.X, 
                                     source.Y, 
@@ -57,7 +57,7 @@ define("world", [
         return map.element;
     };
 
-    var World = function(mxp, player) {
+    var World = function(mapData, player) {
         var map = renderMap(mapData);
         var entities = [];
         var touches = function(ent1, ent2) {
@@ -151,6 +151,7 @@ define("world", [
                 exitPortal();
                 for(var i = entities.length - 1; i >= 0; --i) {
                     if(entities[i].draw()) {
+                        //console.log("removing " + entities[i].type);
                         entities.splice(i, 1);
                     }
                 }
@@ -213,7 +214,7 @@ define("world", [
             },
             cargo: function(layer) {
                 for(var i = 0; i < layer.objects.length; i++) {
-                    console.log(layer.objects[i]);
+                    //console.log(layer.objects[i]);
                     if(layer.objects[i].name !== "") {
                         if(layer.objects[i].name === "startposition" || layer.objects[i].name === "start") {
                             player.position.X = layer.objects[i].x;
@@ -236,8 +237,9 @@ define("world", [
                 }
             },
             enemies: function(layer) {
+                world.enemyCount = 0;
                 for(var i = 0; i < layer.objects.length; i++) {
-                    console.log(layer.objects[i].polyline.length);
+                    //console.log(layer.objects[i].polyline.length);
 
                     var pos = {
                         X: layer.objects[i].x + layer.objects[i].polyline[0].x,
@@ -250,6 +252,10 @@ define("world", [
                     ship.position = pos;
                     ship.enemy = player;
                     world.add(ship);
+                    world.enemyCount++;
+                    ship.on("death", function() {
+                        player.kills++;
+                    });
                     ship.waypoints = [];
                     for(var w = 0; w < layer.objects[i].polyline.length; w++) {
                         ship.waypoints.push({
@@ -262,9 +268,9 @@ define("world", [
         };
 
         //add world collision objects
-        console.log(mapData.layers.length);
+        //console.log(mapData.layers.length);
         for(var i = 0; i < mapData.layers.length; i++) {
-            console.log("layer: " + mapData.layers[i].name);
+            //console.log("layer: " + mapData.layers[i].name);
             if(layerHandlers.hasOwnProperty(mapData.layers[i].name)) {
                 layerHandlers[mapData.layers[i].name](mapData.layers[i]);
             }

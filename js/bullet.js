@@ -20,6 +20,7 @@ define("bullet", ["canvas", "effects", "particles"], function(Canvas, effects, P
         var start = Date.now();
         var speed = options.speed || 0.7;
         var dead = false;
+        var dying = false;
         var damage = options.damage || 1;
         var range = options.range || 256;
         var baseY = position.Y;
@@ -33,14 +34,17 @@ define("bullet", ["canvas", "effects", "particles"], function(Canvas, effects, P
             boundingbox: [-8, -8, 16, 16],
             die: function() {
                     //dead = true;
+                    dying = true;
                     trail.kill();
             },
             draw: function(bb) {
                 var now = Date.now();
-                var distance = (now - lastDraw) * 0.5;
-                position.X += distance * Math.cos(options.angle);
-                position.Y += distance * Math.sin(options.angle);
-                travelled += distance;
+                if(!dying) {
+                    var distance = (now - lastDraw) * 0.5;                
+                    position.X += distance * Math.cos(options.angle);
+                    position.Y += distance * Math.sin(options.angle);
+                    travelled += distance;                    
+                }
                 //Canvas.context.fillRect(position.X, position.Y, 8, 8);
                 if(travelled > range) {
                     //dead = true;

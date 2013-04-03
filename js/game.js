@@ -2,7 +2,7 @@ define("game",
         ["raf",
         "canvas",
         "stats.min"],
-    function(raf, Canvas) {
+    function(raf, Canvas, Stats) {
     "strict mode";
     var stats = new Stats();
     stats.domElement.style.position = 'absolute';
