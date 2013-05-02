@@ -58,7 +58,7 @@ define("ship", [
                         ship.inventory.bullets.count = ship.ammo;
                         ship.inventory.bullets.button.label = ship.ammo;
                     }
-                    Resources.shoot.play();
+                    //Resources.shoot.play();
                 }
             },
             draw: function(bb) {
@@ -80,7 +80,7 @@ define("ship", [
                 if(bb) {
                     drawBB();
                 }
-                if(ship.waypoints.length > 0 || ship.target !== null) {
+                if(ship.waypoints.length > 0) {
                     var speed = ship.speed;
                     if(ship.target && ship.target.ship) {
                         speed *= 2;
@@ -98,6 +98,12 @@ define("ship", [
                 } else if(ship.waypoints.length > 0){
                     ship.target = ship.waypoints[ship.nextWaypoint];
                 }
+                if(ship.target && ship.waypoints.length === 0) {
+                    if(Math.abs(ship.position.X - ship.target.X) < 32 &&
+                        Math.abs(ship.position.Y - ship.target.Y) < 32) {
+                        ship.target = null;
+                    }
+                }
                 before = now;
                 return dead;
             },
@@ -111,7 +117,7 @@ define("ship", [
                     ship.fire("death");                    
                 });
                 console.log("kill ship");
-                Resources.explosion.play();
+                //Resources.explosion.play();
             },
             unmove: function(x, y) {
                 if(x) ship.position.X = back.X;

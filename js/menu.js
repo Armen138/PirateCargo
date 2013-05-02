@@ -22,6 +22,7 @@ define("menu", ["easing"], function(easing) {
         var paused = {
             font: "48px RapscallionRegular",
             click: function(mouse) {
+                //menu[0].action();
                 if(mouse.X < width) {
                     for(var i = 0; i < menu.length; i++) {
                         if(hit(i, mouse)) {

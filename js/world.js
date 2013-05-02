@@ -125,7 +125,7 @@ define("world", [
             }, 2000);
         };
 
-        var world = {
+        var world = {            
             powerupCount: 0,
             width: 64 * mapData.layers[0].width,
             height: 64 * mapData.layers[0].height,
@@ -147,6 +147,7 @@ define("world", [
 //                exitPortal();
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
+                //Canvas.context.drawImage(map, 0, 0, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
                 exitPortal();
                 for(var i = entities.length - 1; i >= 0; --i) {

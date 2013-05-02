@@ -106,24 +106,28 @@ define("play", [
     }
 
     function worldScroll(ship, world) {
-        if(ship.position.X - world.offset.X < 200) {
-            world.offset.X -= (200 - (ship.position.X - world.offset.X));
+        var edgeScroll =  {
+            X: Canvas.width / 2,
+            Y: Canvas.height / 2
+        };
+        if(ship.position.X - world.offset.X < edgeScroll.X && world.width - Canvas.width > 0) {
+            world.offset.X -= (edgeScroll.X - (ship.position.X - world.offset.X));
             if(world.offset.X < 0) world.offset.X = 0;
         }
-        if(ship.position.X - world.offset.X > 600) {
-            world.offset.X += ship.position.X - world.offset.X - 600;
-            if(world.offset.X > world.width - 800) {
-                world.offset.X = world.width - 800;
+        if(ship.position.X - world.offset.X > Canvas.width - edgeScroll.X && world.width - Canvas.width > 0) {
+            world.offset.X += ship.position.X - world.offset.X - (Canvas.width - edgeScroll.X);
+            if(world.offset.X > world.width - Canvas.width) {
+                world.offset.X = world.width - Canvas.width;
             }
         }
-        if(ship.position.Y - world.offset.Y < 200) {
-            world.offset.Y -= (200 - (ship.position.Y - world.offset.Y));
+        if(ship.position.Y - world.offset.Y < edgeScroll.Y && world.height - Canvas.height > 0) {
+            world.offset.Y -= (edgeScroll.Y - (ship.position.Y - world.offset.Y));
             if(world.offset.Y < 0) world.offset.Y = 0;
         }
-        if(ship.position.Y - world.offset.Y > 400) {
-            world.offset.Y += ship.position.Y - world.offset.Y - 400;
-            if(world.offset.Y > world.height - 600) {
-                world.offset.Y = world.height - 600;
+        if(ship.position.Y - world.offset.Y > Canvas.height - edgeScroll.Y && world.height - Canvas.height > 0) {
+            world.offset.Y += ship.position.Y - world.offset.Y - (Canvas.height - edgeScroll.Y);
+            if(world.offset.Y > world.height - Canvas.height) {
+                world.offset.Y = world.height - Canvas.height;
             }
         }
     }
@@ -208,7 +212,12 @@ define("play", [
                 ship.angle += 0.1;
             }
 
-            if(down[keys.UP] || down[keys.W]) {
+            if(play.targetActive) {
+                ship.target = {X: play.mouse.X + world.offset.X,
+                    Y: play.mouse.Y + world.offset.Y };                
+            }
+
+            if(down[keys.UP] || down[keys.W] || play.targetActive) {
                 ship.forward(d);
                 worldScroll(ship, world);
                 ship.dirty = true;
@@ -232,10 +241,23 @@ define("play", [
         keyup: function(keyCode) {
             down[keyCode] = false;
         },
+        mousedown: function(mouse) {
+            play.targetActive = true;
+            play.mouse = mouse;
+        },
+        mouseup: function(mouse) {
+            play.targetActive = false;
+            play.mouse = mouse;
+        },
         click: function(mouse) {
             //shoot something
             //shoot();
-            QuickButtons.click(mouse);
+            if(!QuickButtons.click(mouse)) {
+                /*ship.target = {X: mouse.X + world.offset.X,
+                    Y: mouse.Y + world.offset.Y };*/
+                    ship.shoot();
+            }
+            play.mouse = mouse;
         },
         mousemove: function(mouse) {
             play.mouse = mouse;

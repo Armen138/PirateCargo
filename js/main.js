@@ -24,7 +24,33 @@ require(["game",
             Badge
             ) {
     "use strict";
-    Canvas.size(800, 600);
+    //Canvas.size(window.innerWidth, window.innerHeight);
+
+     var screenSize = { width: window.innerWidth,
+                     height: window.innerHeight};
+    if(navigator.isCocoonJS) {
+        console.log("resizing canvas to fit android");
+        if(screenSize.width > 960 && screenSize.width > screenSize.height) {
+            var ratio = 960 / screenSize.width;
+            screenSize.width = 960;
+            screenSize.height *= ratio;
+        } else {
+            if(screenSize.height > 960 && screenSize.width < screenSize.height) {
+                var ratio = 960 / screenSize.height;
+                screenSize.height = 960;
+                screenSize.width *= ratio;
+            }                             
+        }        
+    } else {
+        console.log("capping canvas at 960x960");
+        if(screenSize.width > 960) {
+            screenSize.width = 960;
+        }
+        if(screenSize.height > 960) {
+            screenSize.height = 960;
+        }
+    }
+    Canvas.size(screenSize);
     Canvas.clear("black");
 
     var playerStats = {};
@@ -35,7 +61,7 @@ require(["game",
 
     Resources.on("load", function() {
         console.log("loaded");
-        document.getElementById("loading").style.display = "none";
+        //document.getElementById("loading").style.display = "none";
         game.run();
     });
 

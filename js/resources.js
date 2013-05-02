@@ -45,17 +45,17 @@ define("resources", ["events", "racket"], function(events, Racket) {
                     img.src = files[file];
                     img.setAttribute("class", "resources");
                     img.setAttribute("name", file);
-                    document.body.appendChild(img);
+                    //document.body.appendChild(img);
                     resources[file] = img;
                 }
             }
         }
     };
 
-    var domResources = document.querySelectorAll("img.resources");
-    for(var i = 0; i < domResources.length; i++) {
-        resources[domResources[i].getAttribute("name")] = domResources[i];
-    }
+    // var domResources = document.querySelectorAll("img.resources");
+    // for(var i = 0; i < domResources.length; i++) {
+    //     resources[domResources[i].getAttribute("name")] = domResources[i];
+    // }
     events.attach(resources);
     window._GAME_RESOURCES_ = resources;
     return resources;

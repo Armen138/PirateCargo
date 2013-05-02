@@ -24,6 +24,9 @@
 				for(var i = 0; i < maxChannels; i++) {
 					if(i >= channels.length) {
 						channels[i] = new Audio(files);
+						if(channels[i].load) {
+							channels[i].load();
+						}
 					}
 					if(channels[i].currentTime === 0 || channels[i].ended) {
 						channels[i].loop = loop;
@@ -52,6 +55,9 @@
 		} else {
 			//for(var i = 0; i < maxChannels; i++) {
 				channels.push(new Audio(files));
+				if(channels[0].load) {
+					channels[0].load();	
+				}				
 			//}
 			callback(true);
 		}

@@ -6,12 +6,17 @@
 		<link rel="stylesheet" href="fonts/rapscallion.css" type="text/css"></link>
 		<style type="text/css">
 			canvas {
-				width: 800px;
+
+				/*width: 800px;
 				height: 600px;
 				position: relative;
 				margin-left: auto;
 				margin-right: auto;
-				border-radius: 20px;
+				border-radius: 20px;*/
+				position: absolute;
+				top: 0;
+				left: 0;
+				z-index: 999;
 				transform: translateZ(0);
 			}
 			html {
@@ -99,9 +104,10 @@
 		<script src="js/PirateCargo.js"></script>
 	</head>
 	<body>
+		<canvas>One does not simply play games without a canvas-capable browser</canvas>
+	<!-- 			
 		<div class="centered">
 			<div class="container">
-				<canvas width=800 height=600>One does not simply play games without a canvas-capable browser</canvas>
 				<div class="credits" id="credits">
 					<br/>
 					Programming: <br/>
@@ -123,6 +129,6 @@
 					<img src="images/loading.png"/>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</body>
 </html>

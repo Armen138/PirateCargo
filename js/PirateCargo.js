@@ -2274,26 +2274,27 @@ define("canvas", function() {
 }());
 define("game",
         ["raf",
-        "canvas",
-        "stats.min"],
-    function(raf, Canvas, Stats) {
+        "canvas"
+        /*"stats.min"*/],
+    function(raf, Canvas /*Stats*/) {
     "strict mode";
-    var stats = new Stats();
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
+    // var stats = new Stats();
+    // stats.domElement.style.position = 'absolute';
+    // stats.domElement.style.left = '0px';
+    // stats.domElement.style.top = '0px';
 
-    document.body.appendChild( stats.domElement );
+    // document.body.appendChild( stats.domElement );
 
     var game = {
             run: function() {
-                stats.begin();
+                // stats.begin();
                 if(game.state) {
                     game.state.run();
                 }
                 raf.requestAnimationFrame.call(window, game.run);
-                stats.end();
-            }
+                // stats.end();
+            },
+            touches: {}
         },
         state = null;
 
@@ -2344,10 +2345,76 @@ define("game",
         }
     });
 
-    if(typeof(Clay) !== "undefined") {
-        game.leaderboard = new Clay.Leaderboard({id: 675});
-    }
+    window.addEventListener("mousedown", function(e) {
+        if(game.state && game.state.mousedown) {
+            var x = e.clientX - Canvas.position.X;
+            var y = e.clientY - Canvas.position.Y;
+            game.state.mousedown({X: x, Y: y});
+        }
+    });
 
+
+    window.addEventListener("mouseup", function(e) {
+        if(game.state && game.state.mouseup) {
+            var x = e.clientX - Canvas.position.X;
+            var y = e.clientY - Canvas.position.Y;
+            game.state.mouseup({X: x, Y: y});
+        }
+    });
+
+    window.addEventListener("touchstart", function(e) {
+        console.log("touchstart");
+        if(game.state && game.state.mousedown) {
+            var touches = e.changedTouches;
+            if(touches.length > 0) {
+                var x = (touches[0].pageX | 0);// - Canvas.position.X;
+                var y = (touches[0].pageY | 0);// - Canvas.position.Y;
+                game.state.mousedown({X: x, Y: y}); 
+                game.touches[touches[0].identifier] = Date.now();               
+            }
+        }        
+    });
+
+
+    window.addEventListener("touchmove", function(e) {
+        console.log("touchmove");
+        if(game.state && game.state.mousemove) {
+            var touches = e.changedTouches;
+            if(touches.length > 0) {
+                var x = (touches[0].pageX | 0);// - Canvas.position.X;
+                var y = (touches[0].pageY | 0);// - Canvas.position.Y;
+                game.state.mousemove({X: x, Y: y}); 
+                //game.touches[touches[0].identifier] = Date.now();               
+            }
+        }        
+    });
+
+    window.addEventListener("touchend", function(e) {
+        console.log("touchend");
+        var touches = e.changedTouches;
+        if(game.state && game.state.mouseup) {
+            if(touches.length > 0) {
+                var x = (touches[0].pageX | 0);// - Canvas.position.X;
+                var y = (touches[0].pageY | 0);// - Canvas.position.Y;
+                game.state.mouseup({X: x, Y: y});           
+            
+                //game.touches[touches[0].identifier] = null;
+            }
+        } 
+        console.log(game.touches[touches[0].identifier]);
+        console.log(Date.now() - game.touches[touches[0].identifier]);
+        if(/*game.touches[touches[0].identifier] && 
+            Date.now() - game.touches[touches[0].identifier] < 400 &&*/
+            game.state.click) {
+            //if(touches.length > 0) {
+                var x = (touches[0].pageX | 0);// - Canvas.position.X;
+                var y = (touches[0].pageY | 0);// - Canvas.position.Y;
+
+                game.state.click({X: x, Y: y})
+            //}
+        }            
+        
+    });
     return game;
 });define("gamepad", ["raf", "events"], function(raf, Events) {
 	var buttonStates = [];
@@ -2464,7 +2531,33 @@ require(["game",
             Badge
             ) {
     "use strict";
-    Canvas.size(800, 600);
+    //Canvas.size(window.innerWidth, window.innerHeight);
+
+     var screenSize = { width: window.innerWidth,
+                     height: window.innerHeight};
+    if(navigator.isCocoonJS) {
+        console.log("resizing canvas to fit android");
+        if(screenSize.width > 960 && screenSize.width > screenSize.height) {
+            var ratio = 960 / screenSize.width;
+            screenSize.width = 960;
+            screenSize.height *= ratio;
+        } else {
+            if(screenSize.height > 960 && screenSize.width < screenSize.height) {
+                var ratio = 960 / screenSize.height;
+                screenSize.height = 960;
+                screenSize.width *= ratio;
+            }                             
+        }        
+    } else {
+        console.log("capping canvas at 960x960");
+        if(screenSize.width > 960) {
+            screenSize.width = 960;
+        }
+        if(screenSize.height > 960) {
+            screenSize.height = 960;
+        }
+    }
+    Canvas.size(screenSize);
     Canvas.clear("black");
 
     var playerStats = {};
@@ -2475,7 +2568,7 @@ require(["game",
 
     Resources.on("load", function() {
         console.log("loaded");
-        document.getElementById("loading").style.display = "none";
+        //document.getElementById("loading").style.display = "none";
         game.run();
     });
 
@@ -2718,6 +2811,7 @@ define("menu", ["easing"], function(easing) {
         var paused = {
             font: "48px RapscallionRegular",
             click: function(mouse) {
+                //menu[0].action();
                 if(mouse.X < width) {
                     for(var i = 0; i < menu.length; i++) {
                         if(hit(i, mouse)) {
@@ -3051,24 +3145,28 @@ define("play", [
     }
 
     function worldScroll(ship, world) {
-        if(ship.position.X - world.offset.X < 200) {
-            world.offset.X -= (200 - (ship.position.X - world.offset.X));
+        var edgeScroll =  {
+            X: Canvas.width / 2,
+            Y: Canvas.height / 2
+        };
+        if(ship.position.X - world.offset.X < edgeScroll.X && world.width - Canvas.width > 0) {
+            world.offset.X -= (edgeScroll.X - (ship.position.X - world.offset.X));
             if(world.offset.X < 0) world.offset.X = 0;
         }
-        if(ship.position.X - world.offset.X > 600) {
-            world.offset.X += ship.position.X - world.offset.X - 600;
-            if(world.offset.X > world.width - 800) {
-                world.offset.X = world.width - 800;
+        if(ship.position.X - world.offset.X > Canvas.width - edgeScroll.X && world.width - Canvas.width > 0) {
+            world.offset.X += ship.position.X - world.offset.X - (Canvas.width - edgeScroll.X);
+            if(world.offset.X > world.width - Canvas.width) {
+                world.offset.X = world.width - Canvas.width;
             }
         }
-        if(ship.position.Y - world.offset.Y < 200) {
-            world.offset.Y -= (200 - (ship.position.Y - world.offset.Y));
+        if(ship.position.Y - world.offset.Y < edgeScroll.Y && world.height - Canvas.height > 0) {
+            world.offset.Y -= (edgeScroll.Y - (ship.position.Y - world.offset.Y));
             if(world.offset.Y < 0) world.offset.Y = 0;
         }
-        if(ship.position.Y - world.offset.Y > 400) {
-            world.offset.Y += ship.position.Y - world.offset.Y - 400;
-            if(world.offset.Y > world.height - 600) {
-                world.offset.Y = world.height - 600;
+        if(ship.position.Y - world.offset.Y > Canvas.height - edgeScroll.Y && world.height - Canvas.height > 0) {
+            world.offset.Y += ship.position.Y - world.offset.Y - (Canvas.height - edgeScroll.Y);
+            if(world.offset.Y > world.height - Canvas.height) {
+                world.offset.Y = world.height - Canvas.height;
             }
         }
     }
@@ -3153,7 +3251,12 @@ define("play", [
                 ship.angle += 0.1;
             }
 
-            if(down[keys.UP] || down[keys.W]) {
+            if(play.targetActive) {
+                ship.target = {X: play.mouse.X + world.offset.X,
+                    Y: play.mouse.Y + world.offset.Y };                
+            }
+
+            if(down[keys.UP] || down[keys.W] || play.targetActive) {
                 ship.forward(d);
                 worldScroll(ship, world);
                 ship.dirty = true;
@@ -3177,10 +3280,23 @@ define("play", [
         keyup: function(keyCode) {
             down[keyCode] = false;
         },
+        mousedown: function(mouse) {
+            play.targetActive = true;
+            play.mouse = mouse;
+        },
+        mouseup: function(mouse) {
+            play.targetActive = false;
+            play.mouse = mouse;
+        },
         click: function(mouse) {
             //shoot something
             //shoot();
-            QuickButtons.click(mouse);
+            if(!QuickButtons.click(mouse)) {
+                /*ship.target = {X: mouse.X + world.offset.X,
+                    Y: mouse.Y + world.offset.Y };*/
+                    ship.shoot();
+            }
+            play.mouse = mouse;
         },
         mousemove: function(mouse) {
             play.mouse = mouse;
@@ -3254,9 +3370,10 @@ define("play", [
 					mouse.Y > position.Y + 10) {
 					console.log("peep");
 					quickButtons.buttons[i].action();
-					break;
+					return true;
 				}
 			}
+			return false;
 		},
 		draw: function() {
 			if(quickButtons.buttons.length === 0) {
@@ -3324,6 +3441,9 @@ define("play", [
 				for(var i = 0; i < maxChannels; i++) {
 					if(i >= channels.length) {
 						channels[i] = new Audio(files);
+						if(channels[i].load) {
+							channels[i].load();
+						}
 					}
 					if(channels[i].currentTime === 0 || channels[i].ended) {
 						channels[i].loop = loop;
@@ -3352,6 +3472,9 @@ define("play", [
 		} else {
 			//for(var i = 0; i < maxChannels; i++) {
 				channels.push(new Audio(files));
+				if(channels[0].load) {
+					channels[0].load();	
+				}				
 			//}
 			callback(true);
 		}
@@ -3458,17 +3581,17 @@ define("resources", ["events", "racket"], function(events, Racket) {
                     img.src = files[file];
                     img.setAttribute("class", "resources");
                     img.setAttribute("name", file);
-                    document.body.appendChild(img);
+                    //document.body.appendChild(img);
                     resources[file] = img;
                 }
             }
         }
     };
 
-    var domResources = document.querySelectorAll("img.resources");
-    for(var i = 0; i < domResources.length; i++) {
-        resources[domResources[i].getAttribute("name")] = domResources[i];
-    }
+    // var domResources = document.querySelectorAll("img.resources");
+    // for(var i = 0; i < domResources.length; i++) {
+    //     resources[domResources[i].getAttribute("name")] = domResources[i];
+    // }
     events.attach(resources);
     window._GAME_RESOURCES_ = resources;
     return resources;
@@ -3532,7 +3655,7 @@ define("ship", [
                         ship.inventory.bullets.count = ship.ammo;
                         ship.inventory.bullets.button.label = ship.ammo;
                     }
-                    Resources.shoot.play();
+                    //Resources.shoot.play();
                 }
             },
             draw: function(bb) {
@@ -3554,7 +3677,7 @@ define("ship", [
                 if(bb) {
                     drawBB();
                 }
-                if(ship.waypoints.length > 0 || ship.target !== null) {
+                if(ship.waypoints.length > 0) {
                     var speed = ship.speed;
                     if(ship.target && ship.target.ship) {
                         speed *= 2;
@@ -3572,6 +3695,12 @@ define("ship", [
                 } else if(ship.waypoints.length > 0){
                     ship.target = ship.waypoints[ship.nextWaypoint];
                 }
+                if(ship.target && ship.waypoints.length === 0) {
+                    if(Math.abs(ship.position.X - ship.target.X) < 32 &&
+                        Math.abs(ship.position.Y - ship.target.Y) < 32) {
+                        ship.target = null;
+                    }
+                }
                 before = now;
                 return dead;
             },
@@ -3585,7 +3714,7 @@ define("ship", [
                     ship.fire("death");                    
                 });
                 console.log("kill ship");
-                Resources.explosion.play();
+                //Resources.explosion.play();
             },
             unmove: function(x, y) {
                 if(x) ship.position.X = back.X;
@@ -3777,7 +3906,7 @@ define("world", [
             }, 2000);
         };
 
-        var world = {
+        var world = {            
             powerupCount: 0,
             width: 64 * mapData.layers[0].width,
             height: 64 * mapData.layers[0].height,
@@ -3799,6 +3928,7 @@ define("world", [
 //                exitPortal();
                 Canvas.context.save();
                 Canvas.context.drawImage(map, world.offset.X, world.offset.Y, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
+                //Canvas.context.drawImage(map, 0, 0, Canvas.width, Canvas.height, 0, 0, Canvas.width, Canvas.height);
                 Canvas.context.translate(-world.offset.X, -world.offset.Y);
                 exitPortal();
                 for(var i = entities.length - 1; i >= 0; --i) {

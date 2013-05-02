@@ -12,9 +12,10 @@ define("quickbuttons", ["canvas"], function(Canvas) {
 					mouse.Y > position.Y + 10) {
 					console.log("peep");
 					quickButtons.buttons[i].action();
-					break;
+					return true;
 				}
 			}
+			return false;
 		},
 		draw: function() {
 			if(quickButtons.buttons.length === 0) {
